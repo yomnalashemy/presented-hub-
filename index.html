@@ -51,7 +51,7 @@ body[data-tint="gold"] .ambient{background:radial-gradient(ellipse 80% 60% at 20
 body[data-tint="green"] .ambient{background:radial-gradient(ellipse 80% 60% at 20% 30%, rgba(61,214,140,.08) 0%, transparent 60%),radial-gradient(ellipse 70% 70% at 80% 70%, rgba(155,40,235,.08) 0%, transparent 60%);}
 
 /* ===== INTRO SCREEN ===== */
-.intro-screen{position:fixed;inset:0;background:#000;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity 1.2s cubic-bezier(.65,0,.35,1);}
+.intro-screen{position:fixed;inset:0;background:#000;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity 1.2s cubic-bezier(.65,0,.35,1);cursor:pointer;}
 .intro-screen.gone{opacity:0;pointer-events:none;}
 .intro-dot{width:14px;height:14px;border-radius:50%;background:var(--purple);box-shadow:0 0 30px var(--purple),0 0 60px rgba(155,40,235,.5);animation:introDotPulse 1.4s ease-in-out infinite;}
 @keyframes introDotPulse{0%,100%{transform:scale(1);opacity:1;box-shadow:0 0 30px var(--purple),0 0 60px rgba(155,40,235,.5);}50%{transform:scale(1.4);opacity:.7;box-shadow:0 0 50px var(--purple),0 0 100px rgba(155,40,235,.8);}}
@@ -968,7 +968,7 @@ h4{font-size:20px;font-weight:700;letter-spacing:-.005em;}
   <div class="intro-title">The <span class="purple">Hub</span></div>
   <div class="intro-sub">A team project share</div>
   <div class="intro-loader"></div>
-  <div class="intro-status">Ready</div>
+  <div class="intro-status">Click anywhere to begin →</div>
 </div>
 
 <!-- OUTRO SCREEN — appears past the last slide -->
@@ -2063,19 +2063,21 @@ progress.style.width = (1/total*100) + '%';
 updateHUD();
 setTint();
 
-// Intro screen — fades out after ~5.2s on first load
-(function playIntro(){
+// Intro screen — fades out automatically; also click/tap/key anywhere to skip
+// Wrapped in try so any error elsewhere can't trap the user on the intro
+try {
   const intro = document.getElementById('introScreen');
-  if(!intro) return;
-  setTimeout(() => intro.classList.add('gone'), 5200);
-  const skip = () => { intro.classList.add('gone'); };
-  intro.addEventListener('click', skip);
-  document.addEventListener('keydown', function once(e){
-    if (intro.classList.contains('gone')) return;
-    skip();
-    document.removeEventListener('keydown', once);
-  }, {once:false});
-})();
+  if(intro){
+    // Auto-fade after 2.8s (was 5.2s — too long)
+    setTimeout(() => intro.classList.add('gone'), 2800);
+    const skip = () => intro.classList.add('gone');
+    intro.addEventListener('click', skip);
+    intro.addEventListener('touchstart', skip, {passive:true});
+    // Any key press skips
+    const keyListener = () => { skip(); document.removeEventListener('keydown', keyListener); };
+    document.addEventListener('keydown', keyListener);
+  }
+} catch(e){ console.warn('Intro skip handler error:', e); }
 
 // Cursor-tracking spotlight — soft purple radial light follows mouse
 (function cursorTracker(){
@@ -2255,11 +2257,14 @@ function initThree(){
     threeRenderer.setSize(window.innerWidth, window.innerHeight);
   });
 
-  // Animation loop
+  // Animation loop — only renders when 3D scene is visible (saves CPU/GPU)
   let t0 = performance.now();
   function loop(now){
     const dt = (now - t0) / 1000;
     requestAnimationFrame(loop);
+
+    // Skip rendering entirely when not on a hero slide — huge perf saver
+    if (!document.body.classList.contains('three-active')) return;
 
     // Mouse-reactive camera parallax
     threeMouseX += (threeTargetMX - threeMouseX) * 0.04;
