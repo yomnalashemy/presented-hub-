@@ -1,0 +1,2399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ziina FinCrime Hub — Team Tour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<style>
+:root{
+  --bg:#0a0612;
+  --bg2:#0e0a1a;
+  --surface:#15101f;
+  --surface2:#1c1530;
+  --surface3:#241c3d;
+  --border:#2a2240;
+  --text:#fff;
+  --muted:#b8b0d0;
+  --dim:#6a6080;
+  --faint:#3a3050;
+  --purple:#9B28EB;
+  --purple2:#C840E0;
+  --plight:#D88BF5;
+  --pdeep:#6B1AA0;
+  --green:#3DD68C;
+  --mint:#5FE3B5;
+  --red:#FF5F8F;
+  --coral:#FF8BA7;
+  --gold:#FFC93C;
+  --sun:#FFD86B;
+  --blue:#5ABEFF;
+  --cyan:#5AE0E5;
+  --indigo:#7B5CFF;
+  --glass:rgba(255,255,255,.04);
+  --glass-border:rgba(255,255,255,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;}
+body{font-size:18px;line-height:1.5}
+
+.ambient{position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(ellipse 80% 60% at 20% 30%, rgba(155,40,235,.10) 0%, transparent 60%),radial-gradient(ellipse 70% 70% at 80% 70%, rgba(200,64,224,.06) 0%, transparent 60%);animation:ambientShift 18s ease-in-out infinite;transition:background 1.2s ease;}
+@keyframes ambientShift{0%,100%{transform:scale(1) translateY(0);}50%{transform:scale(1.15) translateY(-2%);}}
+
+/* Per-slide ambient color tints (applied via data-tint on body) */
+body[data-tint="red"] .ambient{background:radial-gradient(ellipse 80% 60% at 20% 30%, rgba(255,95,143,.10) 0%, transparent 60%),radial-gradient(ellipse 70% 70% at 80% 70%, rgba(200,64,80,.06) 0%, transparent 60%);}
+body[data-tint="blue"] .ambient{background:radial-gradient(ellipse 80% 60% at 20% 30%, rgba(90,190,255,.08) 0%, transparent 60%),radial-gradient(ellipse 70% 70% at 80% 70%, rgba(155,40,235,.08) 0%, transparent 60%);}
+body[data-tint="magenta"] .ambient{background:radial-gradient(ellipse 80% 60% at 20% 30%, rgba(200,64,224,.12) 0%, transparent 60%),radial-gradient(ellipse 70% 70% at 80% 70%, rgba(155,40,235,.08) 0%, transparent 60%);}
+body[data-tint="gold"] .ambient{background:radial-gradient(ellipse 80% 60% at 20% 30%, rgba(255,200,0,.07) 0%, transparent 60%),radial-gradient(ellipse 70% 70% at 80% 70%, rgba(155,40,235,.08) 0%, transparent 60%);}
+body[data-tint="green"] .ambient{background:radial-gradient(ellipse 80% 60% at 20% 30%, rgba(61,214,140,.08) 0%, transparent 60%),radial-gradient(ellipse 70% 70% at 80% 70%, rgba(155,40,235,.08) 0%, transparent 60%);}
+
+/* ===== INTRO SCREEN ===== */
+.intro-screen{position:fixed;inset:0;background:#000;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity 1.2s cubic-bezier(.65,0,.35,1);}
+.intro-screen.gone{opacity:0;pointer-events:none;}
+.intro-dot{width:14px;height:14px;border-radius:50%;background:var(--purple);box-shadow:0 0 30px var(--purple),0 0 60px rgba(155,40,235,.5);animation:introDotPulse 1.4s ease-in-out infinite;}
+@keyframes introDotPulse{0%,100%{transform:scale(1);opacity:1;box-shadow:0 0 30px var(--purple),0 0 60px rgba(155,40,235,.5);}50%{transform:scale(1.4);opacity:.7;box-shadow:0 0 50px var(--purple),0 0 100px rgba(155,40,235,.8);}}
+.intro-brand{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--purple);letter-spacing:.4em;text-transform:uppercase;font-weight:700;opacity:0;animation:introFade .8s ease forwards .8s;}
+.intro-title{font-family:'Inter',sans-serif;font-size:clamp(48px,7vw,96px);font-weight:900;letter-spacing:-.04em;line-height:1;text-align:center;color:#fff;opacity:0;animation:introFadeUp 1s cubic-bezier(.22,1,.36,1) forwards 1.6s;}
+.intro-title .purple{background:linear-gradient(120deg,var(--purple),var(--purple2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.intro-sub{font-family:'Inter',sans-serif;font-size:14px;color:var(--muted);letter-spacing:.16em;text-transform:uppercase;font-weight:500;opacity:0;animation:introFade .8s ease forwards 2.4s;}
+.intro-loader{width:140px;height:1px;background:rgba(255,255,255,.08);position:relative;overflow:hidden;margin-top:8px;opacity:0;animation:introFade .6s ease forwards 2.8s;}
+.intro-loader::after{content:'';position:absolute;top:0;left:0;height:100%;width:0%;background:linear-gradient(90deg,var(--purple),var(--purple2));animation:introLoad 1.6s ease-out forwards 3s;box-shadow:0 0 10px var(--purple);}
+.intro-status{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:.22em;text-transform:uppercase;margin-top:6px;opacity:0;animation:introFade .4s ease forwards 4.5s;}
+@keyframes introFade{from{opacity:0;}to{opacity:1;}}
+@keyframes introFadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
+@keyframes introLoad{from{width:0%;}to{width:100%;}}
+
+/* Intro corner brackets — frame the moment */
+.intro-corner{position:absolute;width:48px;height:48px;border-color:var(--purple);opacity:0;animation:introFade 1s ease forwards 1s;}
+.intro-corner.tl{top:48px;left:48px;border-top:1.5px solid;border-left:1.5px solid;}
+.intro-corner.tr{top:48px;right:48px;border-top:1.5px solid;border-right:1.5px solid;}
+.intro-corner.bl{bottom:48px;left:48px;border-bottom:1.5px solid;border-left:1.5px solid;}
+.intro-corner.br{bottom:48px;right:48px;border-bottom:1.5px solid;border-right:1.5px solid;}
+
+/* ===== OUTRO SCREEN ===== */
+.outro-screen{position:fixed;inset:0;background:#000;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;opacity:0;pointer-events:none;transition:opacity 1s cubic-bezier(.65,0,.35,1);}
+.outro-screen.on{opacity:1;pointer-events:auto;}
+.outro-mark{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--purple);letter-spacing:.4em;text-transform:uppercase;font-weight:700;}
+.outro-fin{font-family:'Inter',sans-serif;font-size:clamp(96px,14vw,180px);font-weight:900;letter-spacing:-.05em;line-height:.9;background:linear-gradient(120deg,#fff 30%,var(--purple) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:outroPulse 4s ease-in-out infinite;}
+@keyframes outroPulse{0%,100%{filter:drop-shadow(0 0 20px rgba(155,40,235,.3));}50%{filter:drop-shadow(0 0 40px rgba(155,40,235,.6));}}
+.outro-meta{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:16px;}
+.outro-name{font-weight:700;font-size:17px;color:#fff;}
+.outro-role{color:var(--muted);font-size:13px;letter-spacing:.04em;}
+.outro-hint{position:absolute;bottom:32px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:.18em;text-transform:uppercase;display:flex;gap:18px;align-items:center;}
+.outro-hint kbd{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:3px;padding:2px 7px;font-size:9px;color:var(--muted);}
+.outro-corner{position:absolute;width:48px;height:48px;border-color:var(--purple);opacity:.5;}
+.outro-corner.tl{top:48px;left:48px;border-top:1.5px solid;border-left:1.5px solid;}
+.outro-corner.tr{top:48px;right:48px;border-top:1.5px solid;border-right:1.5px solid;}
+.outro-corner.bl{bottom:48px;left:48px;border-bottom:1.5px solid;border-left:1.5px solid;}
+.outro-corner.br{bottom:48px;right:48px;border-bottom:1.5px solid;border-right:1.5px solid;}
+
+/* ===== TRANSITION FLOURISH ===== */
+.flourish{position:fixed;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(155,40,235,.15) 50%,transparent 100%);z-index:50;pointer-events:none;opacity:0;transform:translateX(-100%);}
+.flourish.fire{animation:flourishSweep .7s cubic-bezier(.65,0,.35,1) forwards;}
+@keyframes flourishSweep{0%{transform:translateX(-100%);opacity:0;}30%{opacity:1;}70%{opacity:1;}100%{transform:translateX(100%);opacity:0;}}
+
+/* ===== GRADIENT MESH BACKGROUND ===== */
+.mesh-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.mesh-blob{position:absolute;border-radius:50%;filter:blur(140px);opacity:.45;mix-blend-mode:screen;will-change:transform;}
+.mesh-blob.b1{width:60vw;height:60vw;background:radial-gradient(circle,var(--purple),transparent 70%);top:-20vw;left:-15vw;animation:meshDrift1 22s ease-in-out infinite;}
+.mesh-blob.b2{width:50vw;height:50vw;background:radial-gradient(circle,var(--purple2),transparent 70%);bottom:-15vw;right:-10vw;animation:meshDrift2 28s ease-in-out infinite;}
+.mesh-blob.b3{width:42vw;height:42vw;background:radial-gradient(circle,rgba(90,190,255,.6),transparent 70%);top:30%;right:25%;animation:meshDrift3 35s ease-in-out infinite;opacity:.3;}
+.mesh-blob.b4{width:38vw;height:38vw;background:radial-gradient(circle,rgba(155,40,235,.7),transparent 70%);bottom:25%;left:15%;animation:meshDrift4 26s ease-in-out infinite;}
+@keyframes meshDrift1{0%,100%{transform:translate3d(0,0,0) scale(1);}33%{transform:translate3d(15vw,10vh,0) scale(1.15);}66%{transform:translate3d(-8vw,18vh,0) scale(.95);}}
+@keyframes meshDrift2{0%,100%{transform:translate3d(0,0,0) scale(1);}33%{transform:translate3d(-18vw,-12vh,0) scale(1.08);}66%{transform:translate3d(8vw,-20vh,0) scale(1.2);}}
+@keyframes meshDrift3{0%,100%{transform:translate3d(0,0,0) scale(.9);}33%{transform:translate3d(-22vw,8vh,0) scale(1.25);}66%{transform:translate3d(12vw,-15vh,0) scale(1);}}
+@keyframes meshDrift4{0%,100%{transform:translate3d(0,0,0) scale(1);}33%{transform:translate3d(25vw,-18vh,0) scale(1.1);}66%{transform:translate3d(-10vw,20vh,0) scale(.85);}}
+
+/* ===== CURSOR-TRACKING SPOTLIGHT ===== */
+.cursor-light{position:fixed;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(155,40,235,.10) 0%,transparent 60%);pointer-events:none;z-index:2;left:0;top:0;transform:translate3d(-350px,-350px,0);transition:opacity .4s ease;mix-blend-mode:screen;will-change:transform;}
+
+/* ===== AURORA RIBBONS (for hero moments) ===== */
+.aurora{position:absolute;inset:0;pointer-events:none;overflow:hidden;opacity:0;transition:opacity 1.2s ease;border-radius:inherit;}
+.slide.on .aurora{opacity:1;}
+.aurora-ribbon{position:absolute;width:250%;height:120px;background:linear-gradient(90deg,transparent 10%,var(--purple) 35%,var(--purple2) 50%,var(--blue) 65%,transparent 90%);filter:blur(40px);opacity:.35;animation:auroraFlow 14s linear infinite;}
+.aurora-ribbon.r1{top:25%;animation-delay:0s;}
+.aurora-ribbon.r2{top:55%;animation-delay:-7s;opacity:.25;}
+.aurora-ribbon.r3{top:80%;animation-delay:-11s;opacity:.2;}
+@keyframes auroraFlow{from{transform:translateX(-60%);}to{transform:translateX(10%);}}
+
+/* ===== HOLOGRAPHIC BORDER ===== */
+.holo{position:relative;background:var(--surface);background-clip:padding-box;border:1.5px solid transparent;border-radius:10px;}
+.holo::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1.5px;background:linear-gradient(120deg,var(--purple),var(--purple2),var(--blue),var(--purple),var(--purple2));background-size:300% 100%;animation:holoShift 6s linear infinite;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;pointer-events:none;}
+@keyframes holoShift{from{background-position:0% 50%;}to{background-position:300% 50%;}}
+
+/* ===== HERO TITLE GLOW ===== */
+.hero-title,.cover-title{position:relative;}
+.cover-title .purple,.hero-title .purple,h2 .purple,h1 .purple{
+  position:relative;
+  filter:drop-shadow(0 0 24px rgba(155,40,235,.45));
+}
+
+/* ===== CHARACTER SCRAMBLE BUFFER ===== */
+.scramble-char{display:inline-block;font-variant-numeric:tabular-nums;}
+
+/* ===== VIBRANT GRADIENT HERO BACKGROUNDS ===== */
+/* Apply to specific slides for full-bleed colorful backdrop */
+.gradient-hero{position:absolute;inset:0;z-index:0;opacity:0;transition:opacity 1.5s ease;overflow:hidden;}
+.slide.on .gradient-hero{opacity:1;}
+.gradient-hero::before{
+  content:'';position:absolute;inset:-50%;
+  background-size:400% 400%;
+  animation:gradientShift 18s ease infinite;
+  filter:blur(20px);
+}
+@keyframes gradientShift{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+.gradient-hero.cover::before{background:linear-gradient(135deg,#6B1AA0 0%,#9B28EB 25%,#C840E0 50%,#FF6B9D 75%,#FFC93C 100%);}
+.gradient-hero.query::before{background:linear-gradient(135deg,#1a1f4d 0%,#5AE0E5 30%,#7B5CFF 60%,#9B28EB 100%);}
+.gradient-hero.generator::before{background:linear-gradient(135deg,#FF8BA7 0%,#FF6B9D 30%,#C840E0 60%,#9B28EB 100%);}
+.gradient-hero.numbers::before{background:linear-gradient(135deg,#9B28EB 0%,#C840E0 30%,#FFC93C 70%,#FFD86B 100%);}
+.gradient-hero.close::before{background:linear-gradient(135deg,#1a0a30 0%,#6B1AA0 30%,#C840E0 60%,#FF8BA7 90%,#1a0a30 100%);}
+/* Add a vignette so content stays readable on bright bg */
+.gradient-hero::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 100% 80% at center,transparent 30%,rgba(10,6,18,.55) 90%);
+  pointer-events:none;
+}
+
+/* ===== FLOATING DECORATIVE ORBS ===== */
+.float-orbs{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1;opacity:0;transition:opacity 1.2s ease;}
+.slide.on .float-orbs{opacity:.7;}
+.f-orb{position:absolute;border-radius:50%;filter:blur(1px);will-change:transform;opacity:.85;}
+.f-orb.coral{background:radial-gradient(circle,var(--coral),rgba(255,139,167,0) 70%);}
+.f-orb.cyan{background:radial-gradient(circle,var(--cyan),rgba(90,224,229,0) 70%);}
+.f-orb.gold{background:radial-gradient(circle,var(--gold),rgba(255,201,60,0) 70%);}
+.f-orb.purple{background:radial-gradient(circle,var(--purple2),rgba(200,64,224,0) 70%);}
+.f-orb.indigo{background:radial-gradient(circle,var(--indigo),rgba(123,92,255,0) 70%);}
+.f-orb.s1{width:180px;height:180px;top:8%;left:6%;animation:floatA 18s ease-in-out infinite;}
+.f-orb.s2{width:140px;height:140px;top:20%;right:12%;animation:floatB 22s ease-in-out infinite;animation-delay:-5s;}
+.f-orb.s3{width:90px;height:90px;bottom:18%;left:18%;animation:floatA 15s ease-in-out infinite;animation-delay:-8s;}
+.f-orb.s4{width:200px;height:200px;bottom:10%;right:8%;animation:floatB 25s ease-in-out infinite;animation-delay:-3s;}
+.f-orb.s5{width:70px;height:70px;top:50%;left:50%;animation:floatA 12s ease-in-out infinite;animation-delay:-6s;}
+@keyframes floatA{0%,100%{transform:translate3d(0,0,0) scale(1);}33%{transform:translate3d(60px,-40px,0) scale(1.15);}66%{transform:translate3d(-30px,50px,0) scale(.9);}}
+@keyframes floatB{0%,100%{transform:translate3d(0,0,0) scale(1);}33%{transform:translate3d(-50px,30px,0) scale(.95);}66%{transform:translate3d(40px,-60px,0) scale(1.2);}}
+
+/* ===== GLASS MORPHISM CARDS ===== */
+.glass{
+  background:rgba(255,255,255,.04);
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:14px;
+  box-shadow:0 25px 60px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.06);
+}
+.glass-dark{
+  background:rgba(15,10,25,.6);
+  backdrop-filter:blur(20px) saturate(140%);
+  -webkit-backdrop-filter:blur(20px) saturate(140%);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;
+  box-shadow:0 25px 60px rgba(0,0,0,.5);
+}
+
+/* ===== BRIGHTER CHIP VARIANTS ===== */
+.chip.coral{background:rgba(255,139,167,.12);border:1px solid rgba(255,139,167,.4);color:var(--coral);}
+.chip.cyan{background:rgba(90,224,229,.12);border:1px solid rgba(90,224,229,.4);color:var(--cyan);}
+.chip.mint{background:rgba(95,227,181,.12);border:1px solid rgba(95,227,181,.4);color:var(--mint);}
+.chip.sun{background:rgba(255,216,107,.10);border:1px solid rgba(255,216,107,.4);color:var(--sun);}
+.chip.indigo{background:rgba(123,92,255,.12);border:1px solid rgba(123,92,255,.4);color:var(--indigo);}
+
+/* ===== ANIMATED ACCENT LINES ===== */
+.accent-line{position:relative;display:inline-block;}
+.accent-line::after{
+  content:'';position:absolute;bottom:-6px;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--coral),var(--gold),var(--cyan),var(--purple));
+  background-size:300% 100%;
+  animation:accentShift 4s linear infinite;
+  border-radius:2px;
+}
+@keyframes accentShift{from{background-position:0% 0%;}to{background-position:300% 0%;}}
+
+/* ===== BIG STAT NUMBERS (slide 14) with glow halo ===== */
+.big-stat{position:relative;display:inline-block;}
+.big-stat::before{
+  content:'';position:absolute;inset:-20% -15%;
+  background:radial-gradient(ellipse,currentColor 0%,transparent 60%);
+  opacity:.25;filter:blur(30px);z-index:-1;
+  animation:statGlow 3s ease-in-out infinite;
+}
+@keyframes statGlow{0%,100%{opacity:.2;transform:scale(1);}50%{opacity:.5;transform:scale(1.15);}}
+
+/* Stat cards on slide 14 get glass treatment */
+.stat-card{padding:32px 26px;border-radius:16px;background:rgba(255,255,255,.05);backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);border:1px solid rgba(255,255,255,.10);text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.08);transition:transform .4s ease;}
+.stat-card:hover{transform:translateY(-4px);}
+
+/* ===== CURSOR PARTICLE TRAIL ===== */
+.cursor-trail{
+  position:fixed;width:10px;height:10px;border-radius:50%;
+  background:radial-gradient(circle,rgba(155,40,235,.9),rgba(200,64,224,.4) 40%,transparent 80%);
+  pointer-events:none;z-index:30;transform:translate(-50%,-50%);
+  mix-blend-mode:screen;
+  animation:trailFade .8s cubic-bezier(.22,1,.36,1) forwards;
+  box-shadow:0 0 12px rgba(155,40,235,.6);
+}
+.cursor-trail.coral{background:radial-gradient(circle,rgba(255,139,167,.9),rgba(255,107,157,.3) 40%,transparent 80%);box-shadow:0 0 12px rgba(255,139,167,.6);}
+.cursor-trail.cyan{background:radial-gradient(circle,rgba(90,224,229,.9),rgba(123,92,255,.3) 40%,transparent 80%);box-shadow:0 0 12px rgba(90,224,229,.6);}
+.cursor-trail.gold{background:radial-gradient(circle,rgba(255,201,60,.9),rgba(255,216,107,.3) 40%,transparent 80%);box-shadow:0 0 12px rgba(255,201,60,.6);}
+@keyframes trailFade{
+  0%{opacity:1;transform:translate(-50%,-50%) scale(1);}
+  50%{opacity:.6;transform:translate(-50%,-50%) scale(1.6);}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(2.4);}
+}
+
+/* ===== CONFETTI CANVAS (full-screen overlay) ===== */
+.confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:40;}
+
+/* ===== THREE.JS 3D SCENE CANVAS ===== */
+.three-canvas{
+  position:fixed;inset:0;width:100%;height:100%;
+  pointer-events:none;z-index:1;
+  opacity:0;transition:opacity 1.5s ease;
+  mix-blend-mode:screen;
+}
+body.three-active .three-canvas{opacity:1;}
+
+/* ===== GLITCH EFFECT (for the broken "30:00" timestamp) ===== */
+.glitch-text{
+  position:relative;display:inline-block;
+  animation:glitchMain 3.6s infinite steps(1);
+}
+.glitch-text::before,
+.glitch-text::after{
+  content:attr(data-text);
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;
+}
+.glitch-text::before{
+  color:var(--cyan);
+  text-shadow:2px 0 0 var(--cyan);
+  clip-path:polygon(0 0,100% 0,100% 35%,0 35%);
+  animation:glitchTop 3.6s infinite steps(1);
+  opacity:.85;
+}
+.glitch-text::after{
+  color:var(--coral);
+  text-shadow:-2px 0 0 var(--coral);
+  clip-path:polygon(0 60%,100% 60%,100% 100%,0 100%);
+  animation:glitchBottom 3.6s infinite steps(1);
+  opacity:.85;
+}
+@keyframes glitchMain{
+  0%,5%,15%,55%,75%,100%{transform:translate(0,0);filter:none;}
+  6%{transform:translate(-2px,1px);filter:hue-rotate(20deg);}
+  10%{transform:translate(2px,-1px);filter:hue-rotate(-15deg);}
+  56%{transform:translate(-1px,0);}
+  60%{transform:translate(0,1px);}
+  76%{transform:translate(3px,-1px);filter:hue-rotate(30deg);}
+  78%{transform:translate(-2px,1px);}
+}
+@keyframes glitchTop{
+  0%,5%,11%,55%,75%,100%{transform:translate(0,0);}
+  6%{transform:translate(-3px,-2px);}
+  10%{transform:translate(2px,1px);}
+  56%{transform:translate(-2px,-1px);}
+  76%{transform:translate(4px,-2px);}
+}
+@keyframes glitchBottom{
+  0%,5%,11%,55%,75%,100%{transform:translate(0,0);}
+  6%{transform:translate(3px,2px);}
+  10%{transform:translate(-2px,-1px);}
+  56%{transform:translate(2px,1px);}
+  76%{transform:translate(-3px,2px);}
+}
+
+/* ===== LIVE COUNTER ON COVER ===== */
+.live-counter-wrap{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);
+  padding:7px 14px;border-radius:24px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(12px);
+}
+.live-counter-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--mint);
+  box-shadow:0 0 8px var(--mint);
+  animation:livePulse 1.6s ease-in-out infinite;
+}
+@keyframes livePulse{0%,100%{opacity:1;box-shadow:0 0 8px var(--mint);}50%{opacity:.4;box-shadow:0 0 14px var(--mint);}}
+.live-counter-num{color:var(--mint);font-weight:700;letter-spacing:.05em;transition:transform .2s;}
+.live-counter-num.tick{transform:scale(1.15);}
+
+/* ===== 3D LAPTOP MOCKUP ===== */
+.device-stage{
+  perspective:2200px;
+  width:100%;
+  display:flex;align-items:center;justify-content:center;
+  margin-top:20px;
+}
+.laptop-3d{
+  width:640px;height:420px;
+  position:relative;
+  transform-style:preserve-3d;
+  animation:laptopFloat 10s ease-in-out infinite;
+}
+@keyframes laptopFloat{
+  0%,100%{transform:rotateX(10deg) rotateY(-16deg) translateY(0);}
+  50%{transform:rotateX(7deg) rotateY(-11deg) translateY(-18px);}
+}
+.laptop-screen{
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,#0e0a1a 0%,#1c1530 50%,#241c3d 100%);
+  border-radius:16px;padding:18px;
+  box-shadow:
+    0 60px 140px rgba(155,40,235,.5),
+    0 30px 60px rgba(0,0,0,.6),
+    0 0 0 2px rgba(155,40,235,.4),
+    inset 0 1px 0 rgba(255,255,255,.12),
+    inset 0 0 0 1px rgba(255,255,255,.05);
+  transform-style:preserve-3d;
+}
+.laptop-screen::before{
+  content:'';position:absolute;top:8px;left:50%;transform:translateX(-50%);
+  width:60px;height:5px;border-radius:3px;background:rgba(255,255,255,.06);
+}
+.laptop-bezel{
+  position:absolute;inset:18px;border-radius:8px;overflow:hidden;
+  background:#080510;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);
+}
+.laptop-base{
+  position:absolute;bottom:-18px;left:-50px;right:-50px;height:20px;
+  background:radial-gradient(ellipse at center,rgba(155,40,235,.35) 0%,rgba(0,0,0,.6) 60%,transparent 80%);
+  border-radius:50%;
+  filter:blur(12px);
+  z-index:-1;
+}
+/* Animated scan line across the laptop screen for that "the hub is alive" feel */
+.laptop-bezel::after{
+  content:'';position:absolute;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(155,40,235,.4),transparent);
+  animation:laptopScan 4s linear infinite;
+  pointer-events:none;z-index:10;
+}
+@keyframes laptopScan{0%{top:-2px;}100%{top:100%;}}
+
+/* ===== HUB MINI UI (inside the laptop screen) ===== */
+.hub-mini{
+  width:100%;height:100%;background:#0a0612;color:#fff;
+  display:grid;grid-template-rows:auto 1fr;
+  font-family:'Inter',sans-serif;
+}
+.hub-mini-bar{
+  display:flex;align-items:center;gap:8px;padding:6px 10px;
+  background:#0e0a1a;border-bottom:1px solid #1c1530;
+}
+.hub-mini-dots{display:flex;gap:4px;}
+.hub-mini-dots span{width:7px;height:7px;border-radius:50%;background:#3a3050;}
+.hub-mini-dots span:nth-child(1){background:#FF5F57;}
+.hub-mini-dots span:nth-child(2){background:#FEBC2E;}
+.hub-mini-dots span:nth-child(3){background:#28C840;}
+.hub-mini-url{
+  flex:1;text-align:center;font-size:7.5px;font-family:'JetBrains Mono',monospace;
+  color:#888;padding:2px 8px;background:rgba(255,255,255,.03);border-radius:3px;
+}
+.hub-mini-body{display:grid;grid-template-columns:90px 1fr;overflow:hidden;}
+.hub-mini-sidebar{
+  background:#0c0c14;border-right:1px solid #1c1530;padding:10px 8px;
+  display:flex;flex-direction:column;gap:2px;
+}
+.hub-mini-brand{font-weight:800;font-size:10px;padding:4px 6px 10px;border-bottom:1px solid #1c1530;margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.hub-mini-brand::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--purple);box-shadow:0 0 6px var(--purple);}
+.hub-mini-nav{font-size:8.5px;color:#888;padding:4px 6px;border-radius:3px;display:flex;align-items:center;gap:4px;}
+.hub-mini-nav.active{background:rgba(155,40,235,.18);color:#fff;font-weight:600;}
+.hub-mini-main{padding:12px 14px;display:flex;flex-direction:column;gap:10px;overflow:hidden;}
+.hub-mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.hub-mini-stat{padding:8px;background:#0c0c14;border:1px solid #23232c;border-radius:6px;}
+.hub-mini-stat .lbl{font-size:6.5px;color:#888;font-family:'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;}
+.hub-mini-stat .num{font-size:18px;font-weight:900;letter-spacing:-.02em;line-height:1;}
+.hub-mini-stat .num.purple{color:var(--purple);}
+.hub-mini-stat .num.pink{color:var(--purple2);}
+.hub-mini-stat .num.green{color:var(--mint);}
+.hub-mini-stat .num.gold{color:var(--gold);}
+.hub-mini-chart{
+  flex:1;background:#0c0c14;border:1px solid #23232c;border-radius:6px;
+  padding:8px;display:flex;flex-direction:column;gap:6px;
+}
+.hub-mini-chart-title{font-size:6.5px;color:#888;font-family:'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;}
+.hub-mini-bars{display:flex;align-items:flex-end;gap:2px;height:34px;}
+.hub-mini-bars > div{flex:1;background:linear-gradient(180deg,var(--purple2),var(--purple));border-radius:1px;animation:miniBar 4s ease-in-out infinite;}
+.hub-mini-bars > div:nth-child(1){height:30%;animation-delay:0s;}
+.hub-mini-bars > div:nth-child(2){height:50%;animation-delay:.2s;}
+.hub-mini-bars > div:nth-child(3){height:40%;animation-delay:.4s;}
+.hub-mini-bars > div:nth-child(4){height:70%;animation-delay:.6s;}
+.hub-mini-bars > div:nth-child(5){height:55%;animation-delay:.8s;}
+.hub-mini-bars > div:nth-child(6){height:90%;animation-delay:1s;box-shadow:0 0 8px var(--purple);}
+.hub-mini-bars > div:nth-child(7){height:65%;animation-delay:1.2s;}
+.hub-mini-bars > div:nth-child(8){height:80%;animation-delay:1.4s;}
+.hub-mini-bars > div:nth-child(9){height:45%;animation-delay:1.6s;}
+.hub-mini-bars > div:nth-child(10){height:60%;animation-delay:1.8s;}
+.hub-mini-bars > div:nth-child(11){height:75%;animation-delay:2s;}
+.hub-mini-bars > div:nth-child(12){height:50%;animation-delay:2.2s;}
+@keyframes miniBar{0%,100%{transform:scaleY(1);}50%{transform:scaleY(1.15);}}
+.hub-mini-bars > div{transform-origin:bottom;}
+.hub-mini-recent{display:flex;flex-direction:column;gap:3px;font-size:7px;color:#888;}
+.hub-mini-recent div{display:grid;grid-template-columns:1fr auto;gap:6px;padding:2px 0;border-bottom:1px solid #1c1530;}
+.hub-mini-recent .ref{color:var(--purple);font-family:'JetBrains Mono',monospace;font-size:6.5px;}
+
+/* ===== CUSTOM ANIMATED FEATURE ICONS ===== */
+.feat-svg{
+  width:40px;height:40px;display:block;
+  color:var(--glow-color,var(--purple));
+  filter:drop-shadow(0 0 8px currentColor);
+}
+.feat-svg .stroke{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.feat-svg .fill{fill:currentColor;}
+/* Per-icon animations */
+.feat-svg.paste line{stroke-dasharray:30;animation:pasteLine 2.4s ease-in-out infinite;}
+.feat-svg.paste line:nth-child(1){animation-delay:0s;}
+.feat-svg.paste line:nth-child(2){animation-delay:.15s;}
+.feat-svg.paste line:nth-child(3){animation-delay:.30s;}
+.feat-svg.paste line:nth-child(4){animation-delay:.45s;}
+@keyframes pasteLine{0%,80%{stroke-dashoffset:30;opacity:.3;}30%,60%{stroke-dashoffset:0;opacity:1;}100%{stroke-dashoffset:-30;opacity:.3;}}
+
+.feat-svg.eid .scan{animation:eidScanLine 2.4s ease-in-out infinite;}
+@keyframes eidScanLine{0%,100%{transform:translateY(-6px);opacity:.3;}50%{transform:translateY(6px);opacity:1;}}
+
+.feat-svg.tmpl .dot{animation:tmplDot 1.6s ease-in-out infinite;}
+.feat-svg.tmpl .dot:nth-child(1){animation-delay:0s;}
+.feat-svg.tmpl .dot:nth-child(2){animation-delay:.2s;}
+.feat-svg.tmpl .dot:nth-child(3){animation-delay:.4s;}
+@keyframes tmplDot{0%,100%{transform:translateY(0);opacity:.4;}50%{transform:translateY(-3px);opacity:1;}}
+
+.feat-svg.ring circle.ring-fill{
+  stroke-dasharray:88;stroke-dashoffset:25;
+  transform:rotate(-90deg);transform-origin:center;
+  animation:ringFill 3s ease-in-out infinite;
+}
+@keyframes ringFill{0%,100%{stroke-dashoffset:88;}50%{stroke-dashoffset:18;}}
+
+.feat-svg.session .node{animation:sessionNode 2s ease-in-out infinite;}
+.feat-svg.session .node:nth-child(2){animation-delay:.4s;}
+.feat-svg.session .link{stroke-dasharray:20;animation:sessionLink 2s linear infinite;}
+@keyframes sessionNode{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
+@keyframes sessionLink{from{stroke-dashoffset:0;}to{stroke-dashoffset:-20;}}
+
+.feat-svg.pdf .check{stroke-dasharray:14;stroke-dashoffset:14;animation:pdfCheck 2.8s ease-in-out infinite;}
+@keyframes pdfCheck{0%,30%{stroke-dashoffset:14;}50%,80%{stroke-dashoffset:0;}100%{stroke-dashoffset:14;}}
+
+/* ===== FAN-OUT SCENARIO CARDS ===== */
+.scenarios-fan{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+  perspective:1200px;
+}
+.scenarios-fan .scenario-card{
+  padding:14px;background:rgba(255,255,255,.04);
+  backdrop-filter:blur(14px) saturate(150%);
+  -webkit-backdrop-filter:blur(14px) saturate(150%);
+  border:1px solid rgba(255,255,255,.10);border-radius:11px;
+  transform-style:preserve-3d;
+  opacity:0;transform:translateY(20px) rotateX(-12deg) rotateZ(-3deg);
+  transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1),box-shadow .4s ease;
+  box-shadow:0 12px 30px rgba(0,0,0,.3);
+  position:relative;
+}
+.slide.on .scenarios-fan .scenario-card{
+  opacity:1;
+  transform:translateY(0) rotateX(0) rotateZ(0);
+}
+.slide.on .scenarios-fan .scenario-card:nth-child(1){transition-delay:.25s;}
+.slide.on .scenarios-fan .scenario-card:nth-child(2){transition-delay:.32s;}
+.slide.on .scenarios-fan .scenario-card:nth-child(3){transition-delay:.39s;}
+.slide.on .scenarios-fan .scenario-card:nth-child(4){transition-delay:.46s;}
+.slide.on .scenarios-fan .scenario-card:nth-child(5){transition-delay:.53s;}
+.slide.on .scenarios-fan .scenario-card:nth-child(6){transition-delay:.60s;}
+.slide.on .scenarios-fan .scenario-card:nth-child(7){transition-delay:.67s;}
+.slide.on .scenarios-fan .scenario-card:nth-child(8){transition-delay:.74s;}
+.slide.on .scenarios-fan .scenario-card:nth-child(9){transition-delay:.81s;}
+.slide.on .scenarios-fan .scenario-card:nth-child(10){transition-delay:.88s;}
+.slide.on .scenarios-fan .scenario-card:nth-child(11){transition-delay:.95s;}
+.scenarios-fan .scenario-card:hover{
+  transform:translateY(-6px) rotateX(2deg) scale(1.04);
+  box-shadow:0 20px 40px rgba(155,40,235,.3);
+  border-color:rgba(155,40,235,.5);
+}
+.scenarios-fan .scenario-letter{
+  font-size:34px;font-weight:900;line-height:1;letter-spacing:-.04em;
+  background:linear-gradient(135deg,var(--purple),var(--purple2),var(--coral));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 12px rgba(155,40,235,.4));
+}
+.scenarios-fan .scenario-card.highlight{
+  background:rgba(155,40,235,.08);border-color:rgba(155,40,235,.5);
+}
+.scenarios-fan .scenario-card.highlight .scenario-letter{
+  background:linear-gradient(135deg,var(--gold),var(--coral),var(--purple2));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.scenarios-fan .scenario-name{font-size:12.5px;font-weight:700;margin-top:6px;}
+.scenarios-fan .scenario-desc{font-size:10.5px;color:var(--muted);margin-top:3px;line-height:1.45;}
+
+/* ===== CHAPTER DIVIDER SLIDES ===== */
+.chapter-slide{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:0;}
+.chapter-act-tag{
+  font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.4em;
+  text-transform:uppercase;font-weight:700;margin-bottom:16px;
+  display:inline-flex;align-items:center;gap:14px;
+  background:linear-gradient(90deg,var(--purple),var(--coral),var(--gold));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.chapter-act-tag::before,.chapter-act-tag::after{
+  content:'';display:block;width:40px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--purple),transparent);
+}
+.chapter-roman{
+  font-family:'Inter',sans-serif;
+  font-size:clamp(220px,28vw,420px);
+  font-weight:900;letter-spacing:-.06em;line-height:.82;
+  background:linear-gradient(135deg,var(--purple) 0%,var(--purple2) 40%,var(--coral) 75%,var(--gold) 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 80px rgba(155,40,235,.6));
+  margin:8px 0;
+  position:relative;
+}
+.chapter-roman::after{
+  content:'';position:absolute;inset:-15% -10%;
+  background:radial-gradient(ellipse,rgba(155,40,235,.3) 0%,transparent 60%);
+  z-index:-1;filter:blur(40px);
+  animation:chapterPulse 4s ease-in-out infinite;
+}
+@keyframes chapterPulse{0%,100%{opacity:.5;transform:scale(1);}50%{opacity:1;transform:scale(1.12);}}
+.chapter-title{
+  font-size:clamp(36px,5vw,68px);font-weight:800;letter-spacing:-.025em;line-height:1.05;
+  margin-top:20px;
+}
+.chapter-sub{
+  font-size:17px;color:var(--muted);font-weight:300;
+  margin-top:14px;max-width:580px;line-height:1.55;
+}
+
+/* ===== SMART PASTE DATA FLOW VISUALIZATION ===== */
+.flow-stage{
+  position:relative;width:100%;
+  display:grid;grid-template-columns:1fr 60px 1fr;gap:0;align-items:stretch;
+  min-height:260px;
+}
+.flow-source{
+  background:var(--bg2);border:1.5px dashed rgba(155,40,235,.5);border-radius:12px;
+  padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:10.5px;
+  color:var(--muted);line-height:1.85;position:relative;overflow:hidden;
+}
+.flow-source-label{
+  position:absolute;top:-8px;left:14px;padding:2px 8px;
+  background:var(--bg);color:var(--purple);
+  font-size:9px;letter-spacing:.14em;font-weight:700;text-transform:uppercase;
+}
+.flow-source .src-line{position:relative;padding-left:4px;}
+.flow-source .src-token{
+  display:inline-block;padding:1px 6px;border-radius:3px;
+  background:rgba(155,40,235,.18);color:#fff;font-weight:600;
+  animation:tokenPulse 2s ease-in-out infinite;
+}
+.flow-source .src-token.c1{background:rgba(90,224,229,.22);color:var(--cyan);}
+.flow-source .src-token.c2{background:rgba(255,201,60,.22);color:var(--gold);}
+.flow-source .src-token.c3{background:rgba(255,139,167,.22);color:var(--coral);}
+.flow-source .src-token.c4{background:rgba(95,227,181,.22);color:var(--mint);}
+@keyframes tokenPulse{0%,100%{box-shadow:0 0 0 0 transparent;}50%{box-shadow:0 0 12px currentColor;}}
+
+.flow-target{
+  display:flex;flex-direction:column;gap:6px;padding:6px 0;
+}
+.flow-field{
+  display:grid;grid-template-columns:1fr 18px;gap:8px;
+  padding:7px 12px;
+  background:rgba(255,255,255,.03);border:1px solid var(--border);
+  border-radius:6px;font-size:11.5px;
+  align-items:center;
+  position:relative;overflow:hidden;
+}
+.flow-field-label{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:var(--muted);letter-spacing:.04em;
+}
+.flow-field-status{
+  width:14px;height:14px;border-radius:50%;
+  background:rgba(255,255,255,.05);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:9px;
+  transition:all .4s ease;
+}
+.flow-field.filled{background:rgba(95,227,181,.08);border-color:rgba(95,227,181,.4);}
+.flow-field.filled .flow-field-status{background:var(--mint);border-color:var(--mint);box-shadow:0 0 10px var(--mint);color:#000;}
+.flow-field.filled .flow-field-status::before{content:'✓';font-weight:700;}
+.flow-field.c1.filled{background:rgba(90,224,229,.08);border-color:rgba(90,224,229,.4);}
+.flow-field.c1.filled .flow-field-status{background:var(--cyan);border-color:var(--cyan);box-shadow:0 0 10px var(--cyan);}
+.flow-field.c2.filled{background:rgba(255,201,60,.08);border-color:rgba(255,201,60,.4);}
+.flow-field.c2.filled .flow-field-status{background:var(--gold);border-color:var(--gold);box-shadow:0 0 10px var(--gold);}
+.flow-field.c3.filled{background:rgba(255,139,167,.08);border-color:rgba(255,139,167,.4);}
+.flow-field.c3.filled .flow-field-status{background:var(--coral);border-color:var(--coral);box-shadow:0 0 10px var(--coral);}
+
+/* Flow path SVG container */
+.flow-paths{
+  position:absolute;inset:0;width:100%;height:100%;
+  pointer-events:none;z-index:2;
+}
+.flow-path{
+  fill:none;stroke-width:1.5;stroke-linecap:round;
+  stroke-dasharray:4 6;opacity:.35;
+  animation:flowPathDash 3s linear infinite;
+}
+@keyframes flowPathDash{from{stroke-dashoffset:0;}to{stroke-dashoffset:-30;}}
+.flow-particle{
+  fill:currentColor;
+  filter:drop-shadow(0 0 6px currentColor);
+}
+
+/* ===== HOLOGRAPHIC 3D EID CARD ===== */
+.eid-stage{perspective:1800px;width:100%;display:flex;align-items:center;justify-content:center;min-height:280px;}
+.eid-3d{width:340px;height:215px;position:relative;transform-style:preserve-3d;animation:eidRotate 12s linear infinite;}
+@keyframes eidRotate{0%{transform:rotateY(0deg);}50%{transform:rotateY(180deg);}100%{transform:rotateY(360deg);}}
+.eid-face{position:absolute;inset:0;border-radius:14px;padding:18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:0 30px 80px rgba(155,40,235,.4),0 0 0 1.5px rgba(155,40,235,.5),inset 0 1px 0 rgba(255,255,255,.15);overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;}
+.eid-face.front{background:linear-gradient(135deg,#c9b88a 0%,#a89a72 100%);color:#000;}
+.eid-face.back{background:linear-gradient(135deg,#a89a72 0%,#c9b88a 100%);color:#000;transform:rotateY(180deg);}
+.eid-face::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.4) 50%,transparent 70%);
+  animation:eidShine 4s linear infinite;
+  pointer-events:none;
+}
+@keyframes eidShine{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
+.eid-label{font-size:8px;color:#5a4a2a;letter-spacing:.04em;}
+.eid-value{font-size:14px;font-weight:800;letter-spacing:-.01em;}
+.eid-value.mono{font-family:'JetBrains Mono',monospace;font-size:12px;}
+.eid-flag{font-size:8px;font-weight:700;letter-spacing:.05em;color:#3a2e1a;}
+.eid-mrz{font-size:6px;color:#5a4a2a;font-family:'JetBrains Mono',monospace;letter-spacing:.02em;line-height:1.4;}
+.eid-back-highlight{background:rgba(255,200,0,.25);border:1px solid rgba(255,200,0,.5);padding:2px 6px;font-size:7px;font-weight:700;letter-spacing:.04em;border-radius:3px;color:#5a4a2a;align-self:flex-start;}
+
+/* Scan beam over the EID — shows AI extraction in progress */
+.eid-3d::after{
+  content:'';position:absolute;left:-20px;right:-20px;height:3px;
+  background:linear-gradient(90deg,transparent,var(--cyan),var(--purple),transparent);
+  filter:blur(2px);
+  box-shadow:0 0 20px var(--cyan);
+  animation:eidScan 3s ease-in-out infinite;
+  z-index:5;
+}
+@keyframes eidScan{0%{top:0;opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{top:100%;opacity:0;}}
+
+/* ===== FEATURE CARD COLOR-CYCLING GLOW ===== */
+.feat-card{position:relative;overflow:hidden;}
+.feat-card::after{
+  content:'';position:absolute;inset:-2px;border-radius:inherit;
+  background:conic-gradient(from var(--angle,0deg),
+    transparent 0deg,
+    var(--glow-color,var(--purple)) 90deg,
+    transparent 180deg,
+    transparent 360deg);
+  filter:blur(8px);opacity:0;
+  transition:opacity .5s ease;
+  z-index:-1;pointer-events:none;
+  animation:cardGlowRotate 6s linear infinite;
+}
+.feat-card:hover::after,.slide.on .feat-card::after{opacity:.5;}
+@property --angle{syntax:'<angle>';initial-value:0deg;inherits:false;}
+@keyframes cardGlowRotate{from{--angle:0deg;}to{--angle:360deg;}}
+/* Per-card hue variation */
+.feat-card:nth-child(1){--glow-color:var(--purple);animation-delay:0s;}
+.feat-card:nth-child(2){--glow-color:var(--cyan);}
+.feat-card:nth-child(3){--glow-color:var(--coral);}
+.feat-card:nth-child(4){--glow-color:var(--gold);}
+.feat-card:nth-child(5){--glow-color:var(--mint);}
+.feat-card:nth-child(6){--glow-color:var(--indigo);}
+
+/* ===== DECORATIVE PULSE DOTS ===== */
+.deco-dots{position:absolute;display:flex;gap:6px;}
+.deco-dot{width:6px;height:6px;border-radius:50%;animation:dotPulse 2.4s ease-in-out infinite;}
+.deco-dot:nth-child(1){background:var(--coral);}
+.deco-dot:nth-child(2){background:var(--gold);animation-delay:.3s;}
+.deco-dot:nth-child(3){background:var(--cyan);animation-delay:.6s;}
+.deco-dot:nth-child(4){background:var(--purple);animation-delay:.9s;}
+@keyframes dotPulse{0%,100%{opacity:.3;transform:scale(1);}50%{opacity:1;transform:scale(1.4);box-shadow:0 0 14px currentColor;}}
+
+.particles{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+.particle{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--purple);box-shadow:0 0 8px var(--purple);opacity:0;animation:floatUp linear infinite;}
+@keyframes floatUp{0%{transform:translateY(0) translateX(0);opacity:0;}10%{opacity:.4;}90%{opacity:.4;}100%{transform:translateY(-110vh) translateX(40px);opacity:0;}}
+
+.scanlines{position:fixed;inset:0;pointer-events:none;z-index:3;background:repeating-linear-gradient(0deg,rgba(255,255,255,.012) 0px,rgba(255,255,255,.012) 1px,transparent 1px,transparent 3px);opacity:.5;mix-blend-mode:overlay;}
+
+.deck{position:fixed;inset:0;overflow:hidden;background:var(--bg);z-index:2;}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:56px 72px;opacity:0;pointer-events:none;transform:translateX(60px) scale(.99);transition:opacity .85s cubic-bezier(.16,1,.3,1),transform .85s cubic-bezier(.16,1,.3,1);}
+.slide.on{opacity:1;pointer-events:auto;transform:none;}
+.slide.prev{transform:translateX(-60px) scale(.99);opacity:0;}
+.slide.prev.on{transform:none;opacity:1;}
+.slide-inner{width:100%;max-width:1280px;position:relative;}
+
+.bracket{position:absolute;width:24px;height:24px;border-color:var(--purple);opacity:0;transition:opacity 1s ease .4s;}
+.slide.on .bracket{opacity:.4;}
+.bracket.tl{top:32px;left:32px;border-top:1.5px solid;border-left:1.5px solid;}
+.bracket.tr{top:32px;right:32px;border-top:1.5px solid;border-right:1.5px solid;}
+.bracket.bl{bottom:32px;left:32px;border-bottom:1.5px solid;border-left:1.5px solid;}
+.bracket.br{bottom:32px;right:32px;border-bottom:1.5px solid;border-right:1.5px solid;}
+
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(155,40,235,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(155,40,235,.025) 1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(ellipse at center,black 30%,transparent 75%);pointer-events:none;opacity:0;transition:opacity 1.5s ease;}
+.slide.on .grid-bg{opacity:1;}
+
+.progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--purple) 0%,var(--purple2) 100%);z-index:20;transition:width .7s cubic-bezier(.16,1,.3,1);box-shadow:0 0 24px rgba(155,40,235,.6);}
+.counter{position:fixed;bottom:28px;right:36px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);letter-spacing:.18em;z-index:15;font-weight:500;transition:opacity .5s ease;}
+.hint{position:fixed;bottom:28px;left:36px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:.05em;z-index:15;transition:opacity .5s ease;}
+.hint kbd{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:9px;color:var(--muted);margin:0 2px;}
+.watermark{position:fixed;top:24px;left:36px;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--dim);letter-spacing:.22em;z-index:15;text-transform:uppercase;font-weight:500;transition:opacity .5s ease;}
+.watermark::before{content:'';display:inline-block;width:8px;height:1px;background:var(--purple);vertical-align:middle;margin-right:8px;}
+body.hide-hud .watermark{opacity:0;pointer-events:none;}
+body.hide-hud .counter{opacity:.35;}
+body:not(.show-hint) .hint{opacity:0;pointer-events:none;}
+
+.nav-btn{position:fixed;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.025);border:1px solid var(--border);color:var(--muted);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s cubic-bezier(.22,1,.36,1);z-index:15;backdrop-filter:blur(8px);}
+.nav-btn:hover{background:rgba(155,40,235,.12);border-color:var(--purple);color:var(--text);transform:translateY(-50%) scale(1.1);}
+.nav-prev{left:20px;}.nav-next{right:20px;}
+
+.eye{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--purple);letter-spacing:.22em;text-transform:uppercase;margin-bottom:18px;font-weight:600;display:inline-flex;align-items:center;gap:14px;}
+.eye::before{content:'';display:block;width:32px;height:1px;background:var(--purple);}
+.eye.red{color:var(--red);}
+.eye.red::before{background:var(--red);}
+.eye.gold{color:var(--gold);}
+.eye.gold::before{background:var(--gold);}
+
+h1{font-size:clamp(64px,7vw,108px);font-weight:900;letter-spacing:-.045em;line-height:.92;}
+h2{font-size:clamp(40px,4.6vw,68px);font-weight:800;letter-spacing:-.03em;line-height:1.02;}
+.hero-title{font-size:clamp(56px,7vw,108px);font-weight:900;letter-spacing:-.045em;line-height:.92;}
+h3{font-size:clamp(28px,3.2vw,44px);font-weight:700;letter-spacing:-.02em;line-height:1.08;}
+h4{font-size:20px;font-weight:700;letter-spacing:-.005em;}
+
+.purple{color:var(--purple);}
+.purple2{color:var(--purple2);}
+.plight{color:var(--plight);}
+.green{color:var(--green);}
+.red{color:var(--red);}
+.gold{color:var(--gold);}
+.blue{color:var(--blue);}
+.muted{color:var(--muted);}
+.dim{color:var(--dim);}
+.mono{font-family:'JetBrains Mono',monospace;}
+
+.lead{font-size:18px;color:var(--muted);font-weight:300;line-height:1.5;max-width:760px;}
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1);}
+.slide.on .reveal{opacity:1;transform:none;}
+.slide.on .r1{transition-delay:.10s;}
+.slide.on .r2{transition-delay:.22s;}
+.slide.on .r3{transition-delay:.36s;}
+.slide.on .r4{transition-delay:.50s;}
+.slide.on .r5{transition-delay:.64s;}
+.slide.on .r6{transition-delay:.78s;}
+.slide.on .r7{transition-delay:.92s;}
+
+.word-reveal{display:inline-block;}
+.word-reveal .word{display:inline-block;opacity:0;transform:translateY(.15em);transition:opacity .55s cubic-bezier(.22,1,.36,1),transform .65s cubic-bezier(.22,1,.36,1);}
+.slide.on .word-reveal .word{opacity:1;transform:none;}
+.slide.on .word-reveal .word:nth-child(1){transition-delay:.15s;}
+.slide.on .word-reveal .word:nth-child(2){transition-delay:.27s;}
+.slide.on .word-reveal .word:nth-child(3){transition-delay:.39s;}
+.slide.on .word-reveal .word:nth-child(4){transition-delay:.51s;}
+.slide.on .word-reveal .word:nth-child(5){transition-delay:.63s;}
+.slide.on .word-reveal .word:nth-child(6){transition-delay:.75s;}
+
+.cover-tag{display:inline-flex;align-items:center;gap:12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--purple);letter-spacing:.24em;text-transform:uppercase;font-weight:600;margin-bottom:48px;padding:8px 14px;border:1px solid rgba(155,40,235,.4);border-radius:4px;background:rgba(155,40,235,.05);}
+.cover-tag::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--purple);box-shadow:0 0 14px var(--purple);animation:pulse 2.4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+.cover-title{font-size:clamp(72px,9vw,128px);font-weight:900;letter-spacing:-.05em;line-height:.9;}
+
+/* HUB MOCKUP COMPONENTS */
+.mock-window{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 25px 80px rgba(0,0,0,.7),0 0 0 1px rgba(155,40,235,.08);}
+.mock-titlebar{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--border);}
+.mock-dot{width:10px;height:10px;border-radius:50%;background:var(--dim);}
+.mock-dot.red{background:#FF5F57;}
+.mock-dot.yellow{background:#FEBC2E;}
+.mock-dot.green{background:#28C840;}
+.mock-url{flex:1;text-align:center;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);padding:4px 10px;background:rgba(255,255,255,.03);border-radius:4px;}
+
+.mock-body{display:grid;grid-template-columns:200px 1fr;background:var(--bg);min-height:480px;}
+.mock-sidebar{background:var(--surface);border-right:1px solid var(--border);padding:18px 14px;display:flex;flex-direction:column;gap:6px;}
+.mock-sidebar-brand{font-weight:800;font-size:16px;letter-spacing:-.01em;padding:6px 8px 18px;border-bottom:1px solid var(--border);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.mock-sidebar-brand::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--purple);box-shadow:0 0 8px var(--purple);}
+.mock-nav-item{padding:8px 10px;border-radius:6px;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:10px;cursor:default;}
+.mock-nav-item.active{background:rgba(155,40,235,.14);color:var(--text);font-weight:600;}
+.mock-nav-icon{font-size:14px;width:18px;text-align:center;}
+
+.mock-main{padding:24px 28px;overflow:hidden;}
+.mock-h{font-size:20px;font-weight:800;letter-spacing:-.015em;margin-bottom:14px;}
+.mock-sub{font-size:12px;color:var(--muted);margin-bottom:18px;}
+
+.mock-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;}
+.mock-card-title{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);font-weight:700;font-family:'JetBrains Mono',monospace;margin-bottom:10px;}
+
+.mock-btn{display:inline-flex;align-items:center;gap:8px;background:var(--purple);color:#fff;padding:8px 16px;border-radius:5px;font-size:13px;font-weight:600;border:none;}
+.mock-btn.ghost{background:transparent;border:1px solid var(--border);color:var(--text);}
+.mock-btn.sm{padding:6px 12px;font-size:12px;}
+
+.mock-input{display:flex;flex-direction:column;gap:5px;}
+.mock-input-label{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.04em;}
+.mock-input-field{background:var(--bg2);border:1px solid var(--border);border-radius:5px;padding:8px 12px;font-size:13px;color:var(--text);font-family:'JetBrains Mono',monospace;}
+.mock-input-field.empty{color:var(--dim);}
+
+.mock-toast{position:absolute;bottom:20px;right:20px;background:rgba(61,214,140,.14);border:1px solid rgba(61,214,140,.4);border-radius:8px;padding:12px 16px;font-size:12px;color:var(--green);font-weight:600;display:flex;align-items:center;gap:10px;backdrop-filter:blur(8px);box-shadow:0 14px 40px rgba(61,214,140,.16);}
+
+.mock-ring-wrap{display:flex;align-items:center;gap:24px;}
+.mock-ring{position:relative;width:140px;height:140px;flex-shrink:0;}
+.mock-ring svg{width:100%;height:100%;transform:rotate(-90deg);}
+.mock-ring-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+
+.mock-pdf{background:#fff;color:#1a1a1a;border-radius:6px;padding:24px;font-family:'Inter',sans-serif;line-height:1.4;font-size:12px;box-shadow:0 25px 80px rgba(0,0,0,.6);}
+.mock-pdf-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #1a1a1a;padding-bottom:12px;margin-bottom:14px;}
+.mock-pdf-brand{font-weight:900;font-size:18px;letter-spacing:-.02em;}
+.mock-pdf-section{margin-bottom:12px;}
+.mock-pdf-h{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#666;margin-bottom:4px;}
+.mock-pdf-row{display:grid;grid-template-columns:120px 1fr;gap:8px;font-size:11px;color:#222;}
+
+.tip{padding:14px 18px;border-radius:8px;background:rgba(155,40,235,.06);border:1px solid rgba(155,40,235,.22);font-size:13.5px;color:var(--muted);display:flex;align-items:flex-start;gap:12px;line-height:1.55;margin-top:18px;}
+.tip-gold{background:rgba(255,200,0,.05);border-color:rgba(255,200,0,.22);}
+.tip-green{background:rgba(61,214,140,.04);border-color:rgba(61,214,140,.22);}
+.tip-red{background:rgba(255,95,143,.04);border-color:rgba(255,95,143,.22);}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center;}
+.two-col.unequal{grid-template-columns:1.4fr 1fr;}
+.two-col.flipped{grid-template-columns:1fr 1.4fr;}
+
+.stagger > *{opacity:0;transform:translateY(16px);transition:opacity .55s cubic-bezier(.22,1,.36,1),transform .55s cubic-bezier(.22,1,.36,1);}
+.slide.on .stagger > *{opacity:1;transform:none;}
+.slide.on .stagger > *:nth-child(1){transition-delay:.30s;}
+.slide.on .stagger > *:nth-child(2){transition-delay:.40s;}
+.slide.on .stagger > *:nth-child(3){transition-delay:.50s;}
+.slide.on .stagger > *:nth-child(4){transition-delay:.60s;}
+.slide.on .stagger > *:nth-child(5){transition-delay:.70s;}
+.slide.on .stagger > *:nth-child(6){transition-delay:.80s;}
+
+.pain-block{padding:18px 22px;border-radius:12px;border:1px solid rgba(255,95,143,.32);background:rgba(255,95,143,.06);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);box-shadow:0 20px 50px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.06);}
+.pain-block .label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:8px;}
+.pain-block .pain-text{font-size:14px;color:var(--text);line-height:1.55;}
+
+.fix-arrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;color:var(--purple);font-weight:700;text-transform:uppercase;padding:8px 0;display:inline-block;}
+.fix-arrow::before{content:'↓';margin-right:8px;color:var(--purple);}
+
+/* HERO SLIDES — for "Meet the Generator" / "Meet the Unified Query" */
+.hero-slide{display:flex;flex-direction:column;justify-content:center;}
+.hero-pain{padding:18px 22px;border-radius:12px;border:1px solid rgba(255,95,143,.32);background:rgba(255,95,143,.07);backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);box-shadow:0 25px 60px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.08);margin-bottom:24px;max-width:880px;}
+.hero-pain .label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:8px;}
+.hero-pain .pain-text{font-size:14.5px;color:var(--text);line-height:1.55;}
+.meet-tag{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--purple);letter-spacing:.18em;text-transform:uppercase;font-weight:700;margin-bottom:12px;}
+.hero-sub{font-size:22px;color:var(--muted);font-weight:300;line-height:1.4;max-width:780px;margin-top:14px;}
+
+/* Feature overview cards (for Meet the Generator) */
+.feat-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px;}
+.feat-card{padding:16px 18px;background:rgba(255,255,255,.05);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);border:1px solid rgba(255,255,255,.10);border-radius:12px;display:flex;flex-direction:column;gap:6px;box-shadow:0 14px 36px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.06);transition:transform .35s ease,box-shadow .35s ease;}
+.feat-card:hover{transform:translateY(-3px);box-shadow:0 20px 44px rgba(155,40,235,.18),inset 0 1px 0 rgba(255,255,255,.12);}
+.feat-card-icon{font-size:18px;}
+.feat-card h4{font-size:13.5px;font-weight:700;}
+.feat-card .desc{font-size:12px;color:var(--muted);line-height:1.45;}
+
+/* Query categories */
+.qcat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px;}
+.qcat{padding:18px;border-radius:10px;border:1px solid var(--border);}
+.qcat.hard{border-color:rgba(255,95,143,.32);background:rgba(255,95,143,.04);}
+.qcat.fuzzy{border-color:rgba(155,40,235,.4);background:rgba(155,40,235,.05);}
+.qcat.score{border-color:rgba(255,200,0,.32);background:rgba(255,200,0,.04);}
+.qcat-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;margin-bottom:10px;}
+.qcat.hard .qcat-label{color:var(--red);}
+.qcat.fuzzy .qcat-label{color:var(--purple);}
+.qcat.score .qcat-label{color:var(--gold);}
+.qcat h4{font-size:14.5px;font-weight:700;margin-bottom:6px;}
+.qcat-desc{font-size:12.5px;color:var(--muted);line-height:1.5;margin-bottom:12px;}
+.chip{display:inline-block;padding:4px 10px;border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:11px;margin:3px;font-weight:500;position:relative;}
+.chip.red{background:rgba(255,95,143,.08);border:1px solid rgba(255,95,143,.32);color:var(--red);}
+.chip.fz{background:rgba(155,40,235,.10);border:1px solid rgba(155,40,235,.32);color:var(--purple);}
+.chip.gold{background:rgba(255,200,0,.06);border:1px solid rgba(255,200,0,.32);color:var(--gold);}
+.chip.new{background:var(--purple);color:#fff;border:1.5px solid var(--purple);font-weight:700;padding:5px 12px;box-shadow:0 0 14px rgba(155,40,235,.5);animation:chipPulse 2.2s ease-in-out infinite;}
+.chip.new::after{content:'NEW';position:absolute;top:-9px;right:-10px;background:var(--gold);color:#000;font-size:8px;font-weight:900;padding:2px 6px;border-radius:3px;letter-spacing:.06em;box-shadow:0 2px 8px rgba(255,200,0,.4);}
+@keyframes chipPulse{0%,100%{box-shadow:0 0 14px rgba(155,40,235,.5);transform:scale(1);}50%{box-shadow:0 0 24px rgba(155,40,235,.9),0 0 40px rgba(155,40,235,.3);transform:scale(1.03);}}
+
+/* "Just shipped" callout — for fresh features */
+.callout-shipped{padding:18px 24px;border-radius:12px;background:linear-gradient(90deg,rgba(155,40,235,.14),rgba(200,64,224,.10));backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border:1px solid var(--purple);position:relative;overflow:hidden;box-shadow:0 18px 44px rgba(155,40,235,.2),inset 0 1px 0 rgba(255,255,255,.10);}
+.callout-shipped::before{content:'';position:absolute;top:0;left:0;width:60%;height:1px;background:linear-gradient(90deg,transparent,var(--purple),transparent);animation:shippedSweep 3s linear infinite;}
+@keyframes shippedSweep{0%{transform:translateX(-100%);}100%{transform:translateX(200%);}}
+.callout-shipped-inner{display:flex;align-items:center;gap:14px;position:relative;z-index:1;font-size:13.5px;color:var(--text);line-height:1.5;}
+
+@media (max-width:1100px){
+  .slide{padding:48px 56px;}
+  .two-col,.feat-cards,.qcat-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- INTRO SCREEN — plays once when deck opens -->
+<div class="intro-screen" id="introScreen">
+  <div class="intro-corner tl"></div>
+  <div class="intro-corner tr"></div>
+  <div class="intro-corner bl"></div>
+  <div class="intro-corner br"></div>
+  <div class="intro-dot"></div>
+  <div class="intro-brand">Ziina · FinCrime Operations</div>
+  <div class="intro-title">The <span class="purple">Hub</span></div>
+  <div class="intro-sub">A team project share</div>
+  <div class="intro-loader"></div>
+  <div class="intro-status">Ready</div>
+</div>
+
+<!-- OUTRO SCREEN — appears past the last slide -->
+<div class="outro-screen" id="outroScreen">
+  <div class="outro-corner tl"></div>
+  <div class="outro-corner tr"></div>
+  <div class="outro-corner bl"></div>
+  <div class="outro-corner br"></div>
+  <div class="outro-mark">— End of tour —</div>
+  <div class="outro-fin">Thank you.</div>
+  <div class="outro-meta">
+    <div class="outro-name">Yomna Al Shemy</div>
+    <div class="outro-role">FinCrime Operations · Ziina Payment LLC</div>
+  </div>
+  <div class="outro-hint">
+    <span><kbd>←</kbd> back</span>
+    <span>·</span>
+    <span><kbd>0</kbd> restart from the top</span>
+  </div>
+</div>
+
+<!-- TRANSITION FLOURISH — purple sweep between slides -->
+<div class="flourish" id="flourish"></div>
+
+<!-- THREE.JS 3D SCENE — floating geometric objects, mouse-reactive -->
+<canvas class="three-canvas" id="threeCanvas"></canvas>
+
+<!-- CONFETTI CANVAS — fires on number-counter completion -->
+<canvas class="confetti-canvas" id="confettiCanvas"></canvas>
+
+<!-- GRADIENT MESH BACKGROUND — 4 colored blobs that drift -->
+<div class="mesh-bg">
+  <div class="mesh-blob b1"></div>
+  <div class="mesh-blob b2"></div>
+  <div class="mesh-blob b3"></div>
+  <div class="mesh-blob b4"></div>
+</div>
+
+<!-- CURSOR SPOTLIGHT — follows mouse, AI-app feel -->
+<div class="cursor-light" id="cursorLight"></div>
+
+<div class="ambient"></div>
+<div class="particles" id="particles"></div>
+<div class="scanlines"></div>
+<div class="watermark">Ziina · FinCrime · Team Project Share</div>
+<div class="progress" id="progress"></div>
+<button class="nav-btn nav-prev" onclick="go(-1)">‹</button>
+<button class="nav-btn nav-next" onclick="go(1)">›</button>
+<div class="hint"><kbd>←</kbd><kbd>→</kbd> navigate · <kbd>Space</kbd> next · <kbd>F</kbd> fullscreen</div>
+<div class="counter" id="counter">01 / 18</div>
+
+<div class="deck" id="deck">
+
+<!-- ===== 1. COVER ===== -->
+<section class="slide on">
+  <div class="gradient-hero cover"></div>
+  <div class="float-orbs">
+    <div class="f-orb coral s1"></div>
+    <div class="f-orb gold s2"></div>
+    <div class="f-orb cyan s3"></div>
+    <div class="f-orb purple s4"></div>
+    <div class="f-orb indigo s5"></div>
+  </div>
+  <div class="bracket tl"></div><div class="bracket tr"></div><div class="bracket bl"></div><div class="bracket br"></div>
+  <div class="grid-bg"></div>
+  <div class="aurora">
+    <div class="aurora-ribbon r1"></div>
+    <div class="aurora-ribbon r2"></div>
+    <div class="aurora-ribbon r3"></div>
+  </div>
+  <div class="slide-inner">
+    <div class="cover-tag reveal r1">FinCrime Team · Project Share · May 2026</div>
+    <div class="reveal r2"><div class="cover-title">How we</div></div>
+    <div class="reveal r3" style="margin-top:6px;"><div class="cover-title">got <span class="purple">here</span>.</div></div>
+    <div class="lead reveal r5" style="margin-top:48px;max-width:740px;font-size:20px;">
+      Two months ago, a normal police case took half a day. Today it takes under ten minutes.
+      Let me walk you through the friction, what we built around it, and what daily work looks like now.
+    </div>
+    <div class="reveal r6" style="margin-top:56px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:20px;">
+        <div style="width:48px;height:2px;background:var(--purple);"></div>
+        <div>
+          <div style="font-weight:700;font-size:16px;">Yomna Al Shemy</div>
+          <div class="muted" style="font-size:12.5px;margin-top:3px;">FinCrime Operations · Ziina</div>
+        </div>
+      </div>
+      <div class="live-counter-wrap" style="margin-left:auto;">
+        <div class="live-counter-dot"></div>
+        <span>LIVE  ·  cases handled  ·  <span class="live-counter-num" id="liveCounter">247</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 2. THE WAY IT USED TO BE ===== -->
+<section class="slide">
+  <div class="bracket tl"></div><div class="bracket tr"></div><div class="bracket bl"></div><div class="bracket br"></div>
+  <div class="grid-bg"></div>
+  <div class="slide-inner">
+    <div class="eye reveal r1 red">Before</div>
+    <h2 class="reveal r2">Half a day. <span class="purple">Per case.</span></h2>
+    <div class="lead reveal r3" style="margin-top:18px;margin-bottom:30px;font-size:18px;">
+      Every police request landed in our inbox the same way. Three windows open at all times.
+      Twenty-five fields to copy by hand. A Google Doc to format from scratch. Bilingual response to write. A strict deadline.
+    </div>
+
+    <div class="reveal r4" style="display:flex;justify-content:center;">
+      <div class="mock-window" style="width:880px;">
+        <div class="mock-titlebar">
+          <div class="mock-dot red"></div><div class="mock-dot yellow"></div><div class="mock-dot green"></div>
+          <div class="mock-url" style="color:var(--red);">Retool · Metabase · Google Docs · EID image · Intercom · ClickUp</div>
+          <div style="width:30px;"></div>
+        </div>
+        <div style="padding:24px;background:var(--bg);min-height:200px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+          <div style="padding:14px;border:1px dashed rgba(255,95,143,.32);background:rgba(255,95,143,.03);border-radius:8px;">
+            <div class="mono red" style="font-size:9px;letter-spacing:.14em;font-weight:700;margin-bottom:6px;">RETOOL</div>
+            <div class="muted" style="font-size:11px;line-height:1.5;">User record. Copy account fields one at a time…</div>
+          </div>
+          <div style="padding:14px;border:1px dashed rgba(255,95,143,.32);background:rgba(255,95,143,.03);border-radius:8px;">
+            <div class="mono red" style="font-size:9px;letter-spacing:.14em;font-weight:700;margin-bottom:6px;">METABASE</div>
+            <div class="muted" style="font-size:11px;line-height:1.5;">Transaction rows. Three separate queries…</div>
+          </div>
+          <div style="padding:14px;border:1px dashed rgba(255,95,143,.32);background:rgba(255,95,143,.03);border-radius:8px;">
+            <div class="mono red" style="font-size:9px;letter-spacing:.14em;font-weight:700;margin-bottom:6px;">GOOGLE DOC</div>
+            <div class="muted" style="font-size:11px;line-height:1.5;">Paste fields one by one. Fonts mess up. Format by hand…</div>
+          </div>
+        </div>
+        <div style="background:rgba(255,95,143,.06);border-top:1px solid rgba(255,95,143,.3);padding:14px 22px;display:flex;justify-content:space-between;align-items:center;">
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div style="width:10px;height:10px;border-radius:50%;background:var(--red);box-shadow:0 0 10px var(--red);animation:pulse 1.4s infinite;"></div>
+            <span style="color:var(--text);font-weight:600;font-size:13px;">Manual mode</span>
+          </div>
+          <div class="glitch-text" data-text="30:00" style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:800;color:var(--red);">30:00</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 3. ACT I — Chapter divider ===== -->
+<section class="slide">
+  <div class="gradient-hero query"></div>
+  <div class="float-orbs">
+    <div class="f-orb cyan s1"></div>
+    <div class="f-orb indigo s2"></div>
+    <div class="f-orb purple s3"></div>
+    <div class="f-orb cyan s4"></div>
+  </div>
+  <div class="bracket tl"></div><div class="bracket tr"></div><div class="bracket bl"></div><div class="bracket br"></div>
+  <div class="grid-bg"></div>
+  <div class="aurora">
+    <div class="aurora-ribbon r1"></div>
+    <div class="aurora-ribbon r2"></div>
+    <div class="aurora-ribbon r3"></div>
+  </div>
+  <div class="slide-inner chapter-slide">
+    <div class="chapter-act-tag reveal r1">Act One</div>
+    <div class="chapter-roman reveal r2">I</div>
+    <h2 class="chapter-title reveal r3">The <span class="purple">Search</span> Side.</h2>
+    <div class="chapter-sub reveal r4">How we find the right account behind a police request, even when the data comes in messy.</div>
+  </div>
+</section>
+
+<!-- ===== 4. MEET THE UNIFIED QUERY (hero) ===== -->
+<section class="slide">
+  <div class="gradient-hero query"></div>
+  <div class="float-orbs">
+    <div class="f-orb cyan s1"></div>
+    <div class="f-orb indigo s2"></div>
+    <div class="f-orb purple s3"></div>
+    <div class="f-orb cyan s4"></div>
+  </div>
+  <div class="bracket tl"></div><div class="bracket tr"></div><div class="bracket bl"></div><div class="bracket br"></div>
+  <div class="grid-bg"></div>
+  <div class="aurora">
+    <div class="aurora-ribbon r1"></div>
+    <div class="aurora-ribbon r2"></div>
+    <div class="aurora-ribbon r3"></div>
+  </div>
+  <div class="slide-inner hero-slide">
+    <div class="meet-tag reveal r1">Surface 1 of 2  ·  The search side</div>
+
+    <div class="reveal r2" style="margin-bottom:8px;">
+      <div class="hero-title">Meet the</div>
+    </div>
+    <div class="reveal r3">
+      <div class="hero-title"><span class="purple">Unified Query</span>.</div>
+    </div>
+
+    <div class="hero-sub reveal r5">
+      One Metabase query. Every identifier the police might give us — including the authorisation code alone. Ranked results with a Match Score on each.
+    </div>
+
+    <div class="reveal r6 hero-pain" style="margin-top:32px;">
+      <div class="label">The problem it solves</div>
+      <div class="pain-text">
+        Police data comes with discrepancies — sometimes only a last 4, sometimes a name with typos, sometimes an amount and a date.
+        We used to run <strong>three separate Metabase queries</strong> and reconcile the results manually. The Unified Query
+        replaces all three with one — fuzzy on names, strict on hard identifiers, ranked on the rest.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 4. INSIDE THE QUERY ===== -->
+<section class="slide">
+  <div class="bracket tl"></div><div class="bracket tr"></div><div class="bracket bl"></div><div class="bracket br"></div>
+  <div class="grid-bg"></div>
+  <div class="slide-inner">
+    <div class="eye reveal r1">How the Query thinks</div>
+    <h2 class="reveal r2">Three kinds of inputs. <span class="purple">One ranked list.</span></h2>
+    <div class="lead reveal r3" style="margin-top:14px;margin-bottom:6px;">Each identifier is checked independently. Hard filters need exact match. Fuzzy filters tolerate typos. Scoring signals boost the rank. Match on any one — the account appears.</div>
+
+    <div class="reveal r4 qcat-grid">
+      <div class="qcat hard">
+        <div class="qcat-label">Hard filters</div>
+        <h4>Exact match</h4>
+        <div class="qcat-desc">Match by any one of these — account appears.</div>
+        <div style="padding-top:4px;"><span class="chip red">Last 4</span><span class="chip red">Gateway ID</span><span class="chip red">Phone</span><span class="chip new">Auth Code</span></div>
+      </div>
+      <div class="qcat fuzzy">
+        <div class="qcat-label">Fuzzy filters</div>
+        <h4>Tolerant match</h4>
+        <div class="qcat-desc">Strips punctuation, case-insensitive, partial in both directions.</div>
+        <div><span class="chip fz">Username</span><span class="chip fz">Display Name</span></div>
+      </div>
+      <div class="qcat score">
+        <div class="qcat-label">Scoring only</div>
+        <h4>Boost the rank</h4>
+        <div class="qcat-desc">Doesn't find accounts alone — refines the ranking when other inputs match.</div>
+        <div><span class="chip gold">Amount</span><span class="chip gold">Date</span></div>
+      </div>
+    </div>
+
+    <div class="reveal r5 callout-shipped" style="margin-top:24px;">
+      <div class="callout-shipped-inner">
+        <span style="font-size:22px;">✨</span>
+        <div>
+          <strong class="purple">Just shipped — Authorisation Code support.</strong>
+          <span class="muted">&nbsp;&nbsp;Police can now give us nothing but an auth code, and the Query finds the account. Powered by joining our Adyen tables — every transaction's auth code is already there. Tested and live.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal r6" style="margin-top:24px;display:flex;justify-content:center;">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 22px;display:flex;align-items:center;gap:18px;font-size:13px;">
+        <span class="mono dim">Match Score</span>
+        <span class="green" style="font-weight:700;">100 = perfect</span>
+        <span class="dim">·</span>
+        <span class="purple">80–99 = strong</span>
+        <span class="dim">·</span>
+        <span class="gold">50–79 = judgment call</span>
+        <span class="dim">·</span>
+        <span class="red">below 50 = unlikely</span>
+      </div>
+    </div>
+
+    <div class="tip reveal r7">
+      <span style="font-size:18px;">🎯</span>
+      <span><strong class="purple">The Username field is the smartest part.</strong> Even if a customer changed half their username, the other half still matches. The Query notices partial similarity in both directions.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 6. ACT II — Chapter divider ===== -->
+<section class="slide">
+  <div class="gradient-hero generator"></div>
+  <div class="float-orbs">
+    <div class="f-orb coral s1"></div>
+    <div class="f-orb purple s2"></div>
+    <div class="f-orb gold s3"></div>
+    <div class="f-orb coral s4"></div>
+  </div>
+  <div class="bracket tl"></div><div class="bracket tr"></div><div class="bracket bl"></div><div class="bracket br"></div>
+  <div class="grid-bg"></div>
+  <div class="aurora">
+    <div class="aurora-ribbon r1"></div>
+    <div class="aurora-ribbon r2"></div>
+    <div class="aurora-ribbon r3"></div>
+  </div>
+  <div class="slide-inner chapter-slide">
+    <div class="chapter-act-tag reveal r1">Act Two</div>
+    <div class="chapter-roman reveal r2">II</div>
+    <h2 class="chapter-title reveal r3">The <span class="purple">Workflow</span> Engine.</h2>
+    <div class="chapter-sub reveal r4">Once we've found the account — how the Generator turns a paste into a regulated response in one click.</div>
+  </div>
+</section>
+
+<!-- ===== 7. MEET THE GENERATOR (hero) ===== -->
+<section class="slide">
+  <div class="gradient-hero generator"></div>
+  <div class="float-orbs">
+    <div class="f-orb coral s1"></div>
+    <div class="f-orb purple s2"></div>
+    <div class="f-orb gold s3"></div>
+    <div class="f-orb coral s4"></div>
+    <div class="f-orb cyan s5"></div>
+  </div>
+  <div class="bracket tl"></div><div class="bracket tr"></div><div class="bracket bl"></div><div class="bracket br"></div>
+  <div class="grid-bg"></div>
+  <div class="aurora">
+    <div class="aurora-ribbon r1"></div>
+    <div class="aurora-ribbon r2"></div>
+    <div class="aurora-ribbon r3"></div>
+  </div>
+  <div class="slide-inner hero-slide">
+    <div class="meet-tag reveal r1">Surface 2 of 2  ·  The workflow engine</div>
+
+    <div class="reveal r2" style="margin-bottom:8px;">
+      <div class="hero-title">Meet the</div>
+    </div>
+    <div class="reveal r3">
+      <div class="hero-title"><span class="purple">Generator</span>.</div>
+    </div>
+
+    <div class="hero-sub reveal r5">
+      One long form. Six features. The half-day reduced to a single click.
+    </div>
+
+    <div class="reveal r6 hero-pain" style="margin-top:28px;">
+      <div class="label">The problem it solves</div>
+      <div class="pain-text">
+        Even after finding the right account, the work wasn't done. Twenty-five fields to copy by hand from Retool, Metabase, and the EID image.
+        Bilingual response to draft. A verdict to calculate. A Word doc to format from scratch. And a ClickUp task to update —
+        which 90% of the time wasn't happening at all. The Generator owns all of it.
+      </div>
+    </div>
+
+    <div class="reveal r7 feat-cards">
+      <div class="feat-card">
+        <svg class="feat-svg paste" viewBox="0 0 40 40">
+          <g class="stroke">
+            <line x1="8" y1="11" x2="24" y2="11"/>
+            <line x1="8" y1="17" x2="30" y2="17"/>
+            <line x1="8" y1="23" x2="22" y2="23"/>
+            <line x1="8" y1="29" x2="28" y2="29"/>
+          </g>
+          <rect class="stroke" x="4" y="6" width="32" height="28" rx="3"/>
+        </svg>
+        <h4>Smart Paste</h4><div class="desc">25 fields auto-fill from any paste</div>
+      </div>
+      <div class="feat-card">
+        <svg class="feat-svg eid" viewBox="0 0 40 40">
+          <rect class="stroke" x="5" y="10" width="30" height="20" rx="3"/>
+          <line class="stroke" x1="9" y1="16" x2="17" y2="16"/>
+          <line class="stroke" x1="9" y1="20" x2="22" y2="20"/>
+          <line class="stroke" x1="9" y1="24" x2="14" y2="24"/>
+          <line class="stroke scan" x1="5" y1="20" x2="35" y2="20" stroke-width="2.5" stroke-dasharray="2 3"/>
+        </svg>
+        <h4>AI EID</h4><div class="desc">Reads both sides of the card</div>
+      </div>
+      <div class="feat-card">
+        <svg class="feat-svg tmpl" viewBox="0 0 40 40">
+          <path class="stroke" d="M 6 10 L 6 26 L 14 26 L 18 32 L 22 26 L 34 26 L 34 10 Z"/>
+          <circle class="fill dot" cx="14" cy="18" r="2"/>
+          <circle class="fill dot" cx="20" cy="18" r="2"/>
+          <circle class="fill dot" cx="26" cy="18" r="2"/>
+        </svg>
+        <h4>Bilingual Templates</h4><div class="desc">EN / AR, smart auth translation</div>
+      </div>
+      <div class="feat-card">
+        <svg class="feat-svg ring" viewBox="0 0 40 40">
+          <circle cx="20" cy="20" r="14" stroke="currentColor" stroke-opacity=".25" stroke-width="3" fill="none"/>
+          <circle class="ring-fill" cx="20" cy="20" r="14" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <text x="20" y="24" text-anchor="middle" fill="currentColor" style="font-size:11px;font-weight:800;font-family:Inter,sans-serif;">$</text>
+        </svg>
+        <h4>State of Funds</h4><div class="desc">Verdict ring, written by math</div>
+      </div>
+      <div class="feat-card">
+        <svg class="feat-svg session" viewBox="0 0 40 40">
+          <line class="stroke link" x1="13" y1="20" x2="27" y2="20" stroke-width="1.5"/>
+          <circle class="fill node" cx="11" cy="20" r="5"/>
+          <circle class="fill node" cx="29" cy="20" r="5"/>
+        </svg>
+        <h4>Session Mode</h4><div class="desc">Multi-subject cases, one task</div>
+      </div>
+      <div class="feat-card">
+        <svg class="feat-svg pdf" viewBox="0 0 40 40">
+          <path class="stroke" d="M 10 6 L 10 34 L 30 34 L 30 14 L 22 6 Z"/>
+          <path class="stroke" d="M 22 6 L 22 14 L 30 14"/>
+          <path class="stroke check" d="M 14 22 L 18 26 L 26 18" stroke-width="2.2"/>
+        </svg>
+        <h4>PDF + ClickUp</h4><div class="desc">Branded output, task updated</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 6. THE HUB — 3D laptop showcase ===== -->
+<section class="slide">
+  <div class="gradient-hero generator"></div>
+  <div class="float-orbs">
+    <div class="f-orb purple s1"></div>
+    <div class="f-orb cyan s2"></div>
+    <div class="f-orb coral s3"></div>
+    <div class="f-orb gold s4"></div>
+    <div class="f-orb indigo s5"></div>
+  </div>
+  <div class="bracket tl"></div><div class="bracket tr"></div><div class="bracket bl"></div><div class="bracket br"></div>
+  <div class="grid-bg"></div>
+  <div class="aurora">
+    <div class="aurora-ribbon r1"></div>
+    <div class="aurora-ribbon r2"></div>
+    <div class="aurora-ribbon r3"></div>
+  </div>
+  <div class="slide-inner">
+    <div class="eye reveal r1" style="text-align:center;display:block;">The product</div>
+    <h2 class="reveal r2" style="text-align:center;margin-bottom:8px;">This is the <span class="purple">Hub</span>.</h2>
+    <div class="lead reveal r3" style="margin:6px auto 0;text-align:center;font-size:16px;">Same screen we open every morning. Live in daily use.</div>
+
+    <div class="reveal r4 device-stage">
+      <div class="laptop-3d">
+        <div class="laptop-screen">
+          <div class="laptop-bezel">
+            <div class="hub-mini">
+              <div class="hub-mini-bar">
+                <div class="hub-mini-dots"><span></span><span></span><span></span></div>
+                <div class="hub-mini-url">🔒 hub-eight-murex.vercel.app</div>
+              </div>
+              <div class="hub-mini-body">
+                <div class="hub-mini-sidebar">
+                  <div class="hub-mini-brand">Hub</div>
+                  <div class="hub-mini-nav active">🏠 Home</div>
+                  <div class="hub-mini-nav">📚 Scenarios</div>
+                  <div class="hub-mini-nav">⚡ Generator</div>
+                  <div class="hub-mini-nav">🧰 Tools</div>
+                  <div class="hub-mini-nav">⚙️ Settings</div>
+                </div>
+                <div class="hub-mini-main">
+                  <div class="hub-mini-stats">
+                    <div class="hub-mini-stat"><div class="lbl">This month</div><div class="num purple">47</div></div>
+                    <div class="hub-mini-stat"><div class="lbl">Avg time</div><div class="num pink">6.2<span style="font-size:10px;color:#888;margin-left:2px;">m</span></div></div>
+                    <div class="hub-mini-stat"><div class="lbl">Funds held</div><div class="num green">68%</div></div>
+                  </div>
+                  <div class="hub-mini-chart">
+                    <div class="hub-mini-chart-title">Daily cases · last 30 days</div>
+                    <div class="hub-mini-bars">
+                      <div></div><div></div><div></div><div></div><div></div><div></div>
+                      <div></div><div></div><div></div><div></div><div></div><div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="laptop-base"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 7. SMART PASTE ===== -->
+<section class="slide">
+  <div class="bracket tl"></div><div class="bracket tr"></div><div class="bracket bl"></div><div class="bracket br"></div>
+  <div class="grid-bg"></div>
+  <div class="slide-inner">
+    <div class="eye reveal r1">Generator · Feature 1</div>
+    <h2 class="reveal r2">Paste once. <span class="purple">Twenty-five fields.</span></h2>
+    <div class="lead reveal r3" style="margin-top:14px;margin-bottom:24px;">Drop everything from Retool and Metabase into the Smart Paste box. The hub parses the chaos. Fields fill themselves.</div>
+
+    <div class="reveal r4 flow-stage" id="flowStage">
+      <!-- LEFT — source: paste box with highlighted tokens -->
+      <div class="flow-source">
+        <div class="flow-source-label">Paste</div>
+        <div class="src-line">Name on EID  <span class="src-token" data-field="name">Hamza Gaffar</span></div>
+        <div class="src-line">EID: <span class="src-token c1" data-field="eid">784200345587305</span></div>
+        <div class="src-line">Balance: <span class="src-token c2" data-field="bal">AED 1,500.00</span></div>
+        <div class="src-line"><span class="src-token c3" data-field="iban">AE120260751230000602187</span></div>
+        <div class="src-line">Phone: <span class="src-token c4" data-field="phone">+971502834650</span></div>
+        <div class="src-line">Status: <span class="src-token" data-field="status">underReview</span></div>
+        <div class="src-line">Username: <span class="src-token c1" data-field="user">hamza_g</span></div>
+      </div>
+
+      <!-- MIDDLE — animated SVG flow paths -->
+      <svg class="flow-paths" viewBox="0 0 60 280" preserveAspectRatio="none">
+        <path class="flow-path" d="M 0,20 Q 30,20 60,20"     stroke="#9B28EB"/>
+        <path class="flow-path" d="M 0,55 Q 30,80 60,80"     stroke="#5AE0E5"/>
+        <path class="flow-path" d="M 0,90 Q 30,130 60,140"   stroke="#FFC93C"/>
+        <path class="flow-path" d="M 0,125 Q 30,170 60,170"  stroke="#FF8BA7"/>
+        <path class="flow-path" d="M 0,160 Q 30,200 60,200"  stroke="#5FE3B5"/>
+        <path class="flow-path" d="M 0,195 Q 30,210 60,230"  stroke="#9B28EB"/>
+        <path class="flow-path" d="M 0,230 Q 30,250 60,260"  stroke="#5AE0E5"/>
+        <!-- moving particles travel along each path -->
+        <circle class="flow-particle" r="3.5" color="#9B28EB"><animateMotion dur="2.4s" repeatCount="indefinite" begin="0s"><mpath href="#fpath1"/></animateMotion></circle>
+        <circle class="flow-particle" r="3.5" color="#5AE0E5"><animateMotion dur="2.4s" repeatCount="indefinite" begin="0.3s"><mpath href="#fpath2"/></animateMotion></circle>
+        <circle class="flow-particle" r="3.5" color="#FFC93C"><animateMotion dur="2.4s" repeatCount="indefinite" begin="0.6s"><mpath href="#fpath3"/></animateMotion></circle>
+        <circle class="flow-particle" r="3.5" color="#FF8BA7"><animateMotion dur="2.4s" repeatCount="indefinite" begin="0.9s"><mpath href="#fpath4"/></animateMotion></circle>
+        <circle class="flow-particle" r="3.5" color="#5FE3B5"><animateMotion dur="2.4s" repeatCount="indefinite" begin="1.2s"><mpath href="#fpath5"/></animateMotion></circle>
+        <circle class="flow-particle" r="3.5" color="#9B28EB"><animateMotion dur="2.4s" repeatCount="indefinite" begin="1.5s"><mpath href="#fpath6"/></animateMotion></circle>
+        <circle class="flow-particle" r="3.5" color="#5AE0E5"><animateMotion dur="2.4s" repeatCount="indefinite" begin="1.8s"><mpath href="#fpath7"/></animateMotion></circle>
+        <!-- hidden mpath references -->
+        <path id="fpath1" d="M 0,20 Q 30,20 60,20"     fill="none"/>
+        <path id="fpath2" d="M 0,55 Q 30,80 60,80"     fill="none"/>
+        <path id="fpath3" d="M 0,90 Q 30,130 60,140"   fill="none"/>
+        <path id="fpath4" d="M 0,125 Q 30,170 60,170"  fill="none"/>
+        <path id="fpath5" d="M 0,160 Q 30,200 60,200"  fill="none"/>
+        <path id="fpath6" d="M 0,195 Q 30,210 60,230"  fill="none"/>
+        <path id="fpath7" d="M 0,230 Q 30,250 60,260"  fill="none"/>
+      </svg>
+
+      <!-- RIGHT — destination: form fields receiving the data -->
+      <div class="flow-target">
+        <div class="flow-field filled"    style="animation-delay:.0s"><span class="flow-field-label">f_full_name</span><span class="flow-field-status"></span></div>
+        <div class="flow-field c1 filled" style="animation-delay:.3s"><span class="flow-field-label">f_eid_number</span><span class="flow-field-status"></span></div>
+        <div class="flow-field c2 filled" style="animation-delay:.6s"><span class="flow-field-label">f_balance</span><span class="flow-field-status"></span></div>
+        <div class="flow-field c3 filled" style="animation-delay:.9s"><span class="flow-field-label">f_iban</span><span class="flow-field-status"></span></div>
+        <div class="flow-field filled"    style="animation-delay:1.2s"><span class="flow-field-label">f_phone</span><span class="flow-field-status"></span></div>
+        <div class="flow-field filled"    style="animation-delay:1.5s"><span class="flow-field-label">f_status</span><span class="flow-field-status"></span></div>
+        <div class="flow-field c1 filled" style="animation-delay:1.8s"><span class="flow-field-label">f_username</span><span class="flow-field-status"></span></div>
+      </div>
+    </div>
+
+    <div class="reveal r5" style="margin-top:18px;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:rgba(95,227,181,.06);border:1px solid rgba(95,227,181,.3);border-radius:8px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--mint);box-shadow:0 0 10px var(--mint);animation:livePulse 1.4s infinite;"></div>
+        <span style="font-weight:700;color:var(--mint);font-size:13px;">22 fields filled · 3 skipped</span>
+      </div>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.05em;">Parse time · 0.8s</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 7. AI EID EXTRACTION ===== -->
+<section class="slide">
+  <div class="bracket tl"></div><div class="bracket tr"></div><div class="bracket bl"></div><div class="bracket br"></div>
+  <div class="grid-bg"></div>
+  <div class="slide-inner">
+    <div class="eye reveal r1">Generator · Feature 2</div>
+    <h2 class="reveal r2">The EID. <span class="purple">Front and back.</span></h2>
+    <div class="lead reveal r3" style="margin-top:14px;margin-bottom:24px;">
+      Drop the Emirates ID image. Click Extract. AI reads every printed field —
+      including <strong>Occupation</strong> and <strong>Issuing Place</strong>, which only exist on the back of the card.
+    </div>
+
+    <div class="reveal r4 two-col">
+      <div class="eid-stage">
+        <div class="eid-3d">
+          <div class="eid-face front">
+            <div class="eid-flag">UNITED ARAB EMIRATES</div>
+            <div>
+              <div class="eid-label">Name</div>
+              <div class="eid-value">HAMZA GAFFAR</div>
+              <div class="eid-label" style="margin-top:10px;">ID Number</div>
+              <div class="eid-value mono">784-2003-4558730-5</div>
+            </div>
+            <div style="display:flex;gap:24px;">
+              <div><div class="eid-label">DOB</div><div class="eid-value" style="font-size:11px;">05.11.2003</div></div>
+              <div><div class="eid-label">Nationality</div><div class="eid-value" style="font-size:11px;">PAK</div></div>
+            </div>
+          </div>
+          <div class="eid-face back">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+              <div class="eid-flag">UAE EID</div>
+              <div class="eid-back-highlight">NOT IN RETOOL</div>
+            </div>
+            <div>
+              <div class="eid-label">Occupation</div>
+              <div class="eid-value">BUILDINGS PAINTER</div>
+              <div class="eid-label" style="margin-top:8px;">Issuing Place</div>
+              <div class="eid-value">DUBAI</div>
+            </div>
+            <div class="eid-mrz">IDAREL2402003&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;<br>0311053M3007174PAK&lt;&lt;&lt;&lt;&lt;&lt;&lt;0</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="mock-card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+            <div class="mock-card-title" style="margin:0;color:var(--cyan);">⚡ AI Extracted · Live</div>
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:livePulse 1.2s ease-in-out infinite;"></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px;font-size:12px;">
+            <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;padding:4px 0;border-bottom:1px solid var(--border);"><span class="muted">Name</span><span style="font-weight:600;">Hamza Gaffar</span></div>
+            <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;padding:4px 0;border-bottom:1px solid var(--border);"><span class="muted">EID</span><span class="mono purple">784-2003-4558730-5</span></div>
+            <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;padding:4px 0;border-bottom:1px solid var(--border);background:rgba(255,200,0,.05);"><span class="gold" style="font-weight:600;">Occupation</span><span style="font-weight:600;">Buildings Painter</span></div>
+            <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;padding:4px 0;background:rgba(255,200,0,.05);"><span class="gold" style="font-weight:600;">Issuing Place</span><span style="font-weight:600;">Dubai</span></div>
+          </div>
+        </div>
+        <div style="margin-top:10px;font-size:11.5px;color:var(--muted);font-style:italic;">The two yellow fields live only on the <strong>back</strong> of the card. Watch it rotate — AI reads both sides.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 8. BILINGUAL TEMPLATES ===== -->
+<section class="slide">
+  <div class="bracket tl"></div><div class="bracket tr"></div><div class="bracket bl"></div><div class="bracket br"></div>
+  <div class="grid-bg"></div>
+  <div class="slide-inner">
+    <div class="eye reveal r1">Generator · Feature 3</div>
+    <h2 class="reveal r2">Eight templates. <span class="purple">Two languages.</span></h2>
+    <div class="lead reveal r3" style="margin-top:14px;margin-bottom:24px;">Every scenario gets a pre-built bilingual template. Authorities not on the list get translated to formal Arabic on the fly.</div>
+
+    <div class="reveal r4" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div class="mock-card" style="direction:rtl;text-align:right;">
+        <div style="display:flex;justify-content:space-between;align-items:center;direction:ltr;margin-bottom:10px;">
+          <div class="mock-card-title" style="margin:0;">العربية · Template 2</div>
+          <button class="mock-btn sm">📋 Copy</button>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);line-height:1.8;">
+          شرطة دبي الموقرة،<br>
+          تحية طيبة وبعد،<br>
+          بالإشارة إلى استفساركم رقم 226004271198،<br>
+          يرجى العثور على المرفقات...
+        </div>
+      </div>
+      <div class="mock-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div class="mock-card-title" style="margin:0;">English · Template 2</div>
+          <button class="mock-btn sm ghost">EN toggle</button>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);line-height:1.8;">
+          Dear Dubai Police,<br>
+          Thank you for reaching out.<br>
+          In reference to inquiry 226004271198,<br>
+          please find attached…
+        </div>
+      </div>
+    </div>
+
+    <div class="tip reveal r6">
+      <span style="font-size:18px;">🌐</span>
+      <span><strong class="purple">Smart authority translation.</strong> Type a custom authority name — AI returns the formal Arabic. Cached so it's instant the second time.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 9. STATE OF FUNDS ===== -->
+<section class="slide">
+  <div class="bracket tl"></div><div class="bracket tr"></div><div class="bracket bl"></div><div class="bracket br"></div>
+  <div class="grid-bg"></div>
+  <div class="slide-inner">
+    <div class="eye reveal r1">Generator · Feature 4</div>
+    <h2 class="reveal r2">The verdict. <span class="purple">Written by math.</span></h2>
+    <div class="lead reveal r3" style="margin-top:14px;margin-bottom:24px;">Type the wallet balance and the amount in complaint. The ring fills. The verdict writes itself — held, spent, or mixed.</div>
+
+    <div class="reveal r4" style="display:flex;justify-content:center;">
+      <div class="mock-card" style="width:640px;">
+        <div class="mock-card-title">State of funds</div>
+        <div class="mock-ring-wrap" style="margin-top:12px;">
+          <div class="mock-ring">
+            <svg viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="42" stroke="var(--border)" stroke-width="6" fill="none"/>
+              <circle cx="50" cy="50" r="42" stroke="var(--green)" stroke-width="6" fill="none" stroke-dasharray="220" stroke-dashoffset="58" stroke-linecap="round"/>
+            </svg>
+            <div class="mock-ring-label">
+              <div style="font-size:24px;font-weight:900;color:var(--green);letter-spacing:-.02em;line-height:1;">80%</div>
+              <div style="font-size:9px;color:var(--muted);margin-top:3px;letter-spacing:.08em;text-transform:uppercase;">held</div>
+            </div>
+          </div>
+          <div style="flex:1;">
+            <div class="mock-input" style="margin-bottom:10px;"><div class="mock-input-label">Wallet balance</div><div class="mock-input-field">AED 1,500</div></div>
+            <div class="mock-input"><div class="mock-input-label">Amount in complaint</div><div class="mock-input-field">AED 1,200</div></div>
+          </div>
+        </div>
+        <div style="margin-top:14px;padding:10px 14px;background:rgba(61,214,140,.06);border:1px solid rgba(61,214,140,.32);border-radius:6px;font-size:12.5px;color:var(--green);font-weight:600;">
+          🔒 Funds Present — On Hold
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 10. SESSION MODE ===== -->
+<section class="slide">
+  <div class="bracket tl"></div><div class="bracket tr"></div><div class="bracket bl"></div><div class="bracket br"></div>
+  <div class="grid-bg"></div>
+  <div class="slide-inner">
+    <div class="eye reveal r1">Generator · Feature 5</div>
+    <h2 class="reveal r2">Two subjects. <span class="purple">One session.</span> One task.</h2>
+    <div class="lead reveal r3" style="margin-top:14px;margin-bottom:24px;">When one card hits two of our accounts. Handle subject 1, click <em>Clear &amp; Next Subject</em>, handle subject 2. Both end up on the same ClickUp task.</div>
+
+    <div class="reveal r4" style="display:flex;justify-content:center;">
+      <div class="mock-window" style="width:880px;">
+        <div class="mock-titlebar">
+          <div class="mock-dot red"></div><div class="mock-dot yellow"></div><div class="mock-dot green"></div>
+          <div class="mock-url">⚡  Generator · Session active</div>
+          <div style="width:30px;"></div>
+        </div>
+        <div style="padding:18px 22px;background:var(--bg);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding:10px 14px;background:rgba(155,40,235,.08);border:1px solid rgba(155,40,235,.32);border-radius:6px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="font-size:18px;">📋</div>
+              <div>
+                <div style="font-size:13px;font-weight:700;">2 subjects · 1 ClickUp task · 1 Arabic email</div>
+                <div class="muted" style="font-size:11px;margin-top:2px;">Ref: 226004271198 · Dubai Police</div>
+              </div>
+            </div>
+            <button class="mock-btn ghost sm">Clear &amp; Next Subject</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="mock-card" style="background:rgba(61,214,140,.04);border-color:rgba(61,214,140,.3);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <div style="font-weight:700;font-size:13px;">Subject 1 ✓</div>
+                <div style="font-size:10px;font-family:'JetBrains Mono',monospace;padding:2px 8px;background:rgba(61,214,140,.12);color:var(--green);border-radius:4px;">HELD</div>
+              </div>
+              <div style="font-size:11.5px;color:var(--muted);">Hamza Gaffar · AED 1,500 held</div>
+            </div>
+            <div class="mock-card" style="border-color:rgba(155,40,235,.5);background:rgba(155,40,235,.05);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <div style="font-weight:700;font-size:13px;">Subject 2 — active</div>
+                <div style="font-size:10px;font-family:'JetBrains Mono',monospace;padding:2px 8px;background:rgba(155,40,235,.14);color:var(--purple);border-radius:4px;">FILLING</div>
+              </div>
+              <div style="font-size:11.5px;color:var(--muted);">Sarah Mansour · in progress…</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 11. PDF + CLICKUP ===== -->
+<section class="slide">
+  <div class="bracket tl"></div><div class="bracket tr"></div><div class="bracket bl"></div><div class="bracket br"></div>
+  <div class="grid-bg"></div>
+  <div class="slide-inner">
+    <div class="eye reveal r1">Generator · Feature 6</div>
+    <h2 class="reveal r2">One click. <span class="purple">Branded PDF. ClickUp updated.</span></h2>
+    <div class="lead reveal r3" style="margin-top:14px;margin-bottom:6px;">
+      The output went out as a Word doc — different formatting every time. Plus 90% of cases weren't getting alerted in ClickUp.
+      <strong>I didn't want to burden engineering or the specialists. I wanted to own this.</strong>
+    </div>
+
+    <div class="reveal r4 two-col" style="margin-top:24px;">
+      <div>
+        <div class="mock-pdf" style="max-width:340px;margin:0 auto;">
+          <div class="mock-pdf-head">
+            <div class="mock-pdf-brand">Ziina</div>
+            <div style="font-size:9px;color:#999;text-align:right;line-height:1.4;">CONFIDENTIAL<br>Ziina Payment LLC</div>
+          </div>
+          <div class="mock-pdf-section">
+            <div class="mock-pdf-h">Reference</div>
+            <div class="mock-pdf-row"><span style="color:#666;">Authority</span><span>Dubai Police</span></div>
+            <div class="mock-pdf-row"><span style="color:#666;">Ref</span><span style="font-family:monospace;">226004271198</span></div>
+          </div>
+          <div class="mock-pdf-section">
+            <div class="mock-pdf-h">Identity</div>
+            <div class="mock-pdf-row"><span style="color:#666;">Name</span><span style="font-weight:600;">Hamza Gaffar</span></div>
+            <div class="mock-pdf-row"><span style="color:#666;">EID</span><span style="font-family:monospace;">784-2003-…</span></div>
+          </div>
+          <div style="background:#f5e9b5;border:1px solid #d9b961;border-radius:4px;padding:7px 10px;margin-top:6px;">
+            <div style="font-size:9px;color:#5a4a2a;font-weight:700;text-transform:uppercase;letter-spacing:.08em;">State of Funds</div>
+            <div style="font-size:11px;font-weight:700;color:#1a1a1a;">🔒 Funds Present — On Hold</div>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--purple);">↑ branded PDF, every time</div>
+      </div>
+      <div>
+        <div class="mock-card" style="background:#fafafa;color:#1a1a1a;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <div style="font-size:13px;font-weight:700;color:#1a1a1a;">ClickUp task created</div>
+            <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:#666;">CLU-9821</div>
+          </div>
+          <div style="background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:10px;font-size:11.5px;color:#444;line-height:1.5;">
+            <strong style="color:#1a1a1a;">🔒 Funds Present — On Hold</strong><br>
+            <span style="color:#666;">Hamza Gaffar · EID 784-…</span><br>
+            <strong style="color:#1a1a1a;">📎 PDF attached</strong>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--purple);">↑ ClickUp task, auto-updated</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 12. TODAY ===== -->
+<section class="slide">
+  <div class="bracket tl"></div><div class="bracket tr"></div><div class="bracket bl"></div><div class="bracket br"></div>
+  <div class="grid-bg"></div>
+  <div class="slide-inner">
+    <div class="eye reveal r1">Today</div>
+    <h2 class="reveal r2">Here's how it <span class="purple">all fits</span> together.</h2>
+
+    <div class="reveal r3" style="display:flex;justify-content:center;margin-top:22px;">
+      <div class="mock-window" style="width:1040px;">
+        <div class="mock-titlebar">
+          <div class="mock-dot red"></div><div class="mock-dot yellow"></div><div class="mock-dot green"></div>
+          <div class="mock-url">🔒 hub-eight-murex.vercel.app</div>
+          <div style="width:30px;"></div>
+        </div>
+        <div class="mock-body">
+          <div class="mock-sidebar">
+            <div class="mock-sidebar-brand">Hub</div>
+            <div class="mock-nav-item active"><span class="mock-nav-icon">🏠</span>Home</div>
+            <div class="mock-nav-item"><span class="mock-nav-icon">📚</span>Scenarios</div>
+            <div class="mock-nav-item"><span class="mock-nav-icon">⚡</span>Generator</div>
+            <div class="mock-nav-item"><span class="mock-nav-icon">🧰</span>Tools</div>
+            <div class="mock-nav-item"><span class="mock-nav-icon">⚙️</span>Settings</div>
+          </div>
+          <div class="mock-main">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px;">
+              <div class="mock-card"><div class="mock-card-title">This month</div><div style="font-size:28px;font-weight:900;color:var(--purple);">47</div><div class="mock-sub" style="margin:0;">cases handled</div></div>
+              <div class="mock-card"><div class="mock-card-title">Avg time</div><div style="font-size:28px;font-weight:900;color:var(--purple2);">6.2<span style="font-size:14px;color:var(--muted);margin-left:4px;">min</span></div><div class="mock-sub" style="margin:0;">per case</div></div>
+              <div class="mock-card"><div class="mock-card-title">Funds held</div><div style="font-size:28px;font-weight:900;color:var(--green);">68%</div><div class="mock-sub" style="margin:0;">of cases</div></div>
+            </div>
+
+            <div class="mock-card" style="margin-bottom:12px;">
+              <div class="mock-card-title">Daily cases — last 30 days</div>
+              <div style="display:flex;align-items:flex-end;gap:3px;height:40px;margin-top:8px;">
+                <div style="flex:1;background:rgba(155,40,235,.5);height:30%;border-radius:2px;"></div>
+                <div style="flex:1;background:rgba(155,40,235,.7);height:55%;border-radius:2px;"></div>
+                <div style="flex:1;background:rgba(155,40,235,.6);height:40%;border-radius:2px;"></div>
+                <div style="flex:1;background:rgba(155,40,235,.9);height:80%;border-radius:2px;"></div>
+                <div style="flex:1;background:rgba(155,40,235,.8);height:65%;border-radius:2px;"></div>
+                <div style="flex:1;background:rgba(155,40,235,1);height:95%;border-radius:2px;box-shadow:0 0 12px var(--purple);"></div>
+                <div style="flex:1;background:rgba(155,40,235,.7);height:50%;border-radius:2px;"></div>
+                <div style="flex:1;background:rgba(155,40,235,.85);height:70%;border-radius:2px;"></div>
+                <div style="flex:1;background:rgba(155,40,235,.5);height:35%;border-radius:2px;"></div>
+                <div style="flex:1;background:rgba(155,40,235,.6);height:45%;border-radius:2px;"></div>
+                <div style="flex:1;background:rgba(155,40,235,.9);height:78%;border-radius:2px;"></div>
+                <div style="flex:1;background:rgba(155,40,235,.7);height:50%;border-radius:2px;"></div>
+                <div style="flex:1;background:rgba(155,40,235,.4);height:25%;border-radius:2px;"></div>
+                <div style="flex:1;background:rgba(155,40,235,.8);height:60%;border-radius:2px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 13. SCENARIOS ===== -->
+<section class="slide">
+  <div class="bracket tl"></div><div class="bracket tr"></div><div class="bracket bl"></div><div class="bracket br"></div>
+  <div class="grid-bg"></div>
+  <div class="slide-inner">
+    <div class="eye reveal r1">What we handle</div>
+    <h2 class="reveal r2">Eleven case shapes. <span class="purple">All documented.</span></h2>
+
+    <div class="scenarios-fan" style="margin-top:28px;">
+      <div class="scenario-card"><div class="scenario-letter">A</div><div class="scenario-name">Standard match</div><div class="scenario-desc">Last 4 + amount + date</div></div>
+      <div class="scenario-card"><div class="scenario-letter">B</div><div class="scenario-name">No transaction</div><div class="scenario-desc">Name or phone only</div></div>
+      <div class="scenario-card"><div class="scenario-letter">C</div><div class="scenario-name">Funds spent</div><div class="scenario-desc">Balance &lt; amount</div></div>
+      <div class="scenario-card"><div class="scenario-letter">D</div><div class="scenario-name">Closed account</div><div class="scenario-desc">No longer active</div></div>
+      <div class="scenario-card"><div class="scenario-letter">E</div><div class="scenario-name">Insufficient data</div><div class="scenario-desc">Can't reliably match</div></div>
+      <div class="scenario-card"><div class="scenario-letter">F</div><div class="scenario-name">Not a user</div><div class="scenario-desc">No account, ever</div></div>
+      <div class="scenario-card"><div class="scenario-letter">G</div><div class="scenario-name">Unalerted intake</div><div class="scenario-desc">Card we never flagged</div></div>
+      <div class="scenario-card highlight"><div class="scenario-letter">H</div><div class="scenario-name">Multi-subject</div><div class="scenario-desc">2+ accounts, one card</div></div>
+      <div class="scenario-card"><div class="scenario-letter">I</div><div class="scenario-name">Cross-authority</div><div class="scenario-desc">Two authorities</div></div>
+      <div class="scenario-card"><div class="scenario-letter">J</div><div class="scenario-name">Unreadable</div><div class="scenario-desc">PDF garbled / missing</div></div>
+      <div class="scenario-card"><div class="scenario-letter">K</div><div class="scenario-name">Withdrawal</div><div class="scenario-desc">Authority retracts</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 14. THE NUMBERS ===== -->
+<section class="slide">
+  <div class="gradient-hero numbers"></div>
+  <div class="float-orbs">
+    <div class="f-orb gold s1"></div>
+    <div class="f-orb purple s2"></div>
+    <div class="f-orb coral s3"></div>
+    <div class="f-orb gold s4"></div>
+  </div>
+  <div class="bracket tl"></div><div class="bracket tr"></div><div class="bracket bl"></div><div class="bracket br"></div>
+  <div class="grid-bg"></div>
+  <div class="slide-inner">
+    <div class="eye reveal r1">Where we are now</div>
+    <h2 class="reveal r2">From half a day. <span class="purple">To under ten minutes.</span></h2>
+    <div class="lead reveal r3" style="margin-top:18px;margin-bottom:32px;font-size:18px;">
+      The numbers, demonstrated on a real multi-subject case we recorded both ways.
+    </div>
+
+    <div class="reveal r4" style="display:grid;grid-template-columns:repeat(3,1fr);gap:22px;">
+      <div class="stat-card">
+        <div class="big-stat" style="font-size:72px;font-weight:900;color:var(--purple);letter-spacing:-.03em;line-height:1;"><span class="big-num" data-target="67" data-suffix="%">0%</span></div>
+        <div style="color:var(--muted);font-size:13px;margin-top:12px;">less time per case</div>
+        <div class="dim" style="font-size:11px;margin-top:6px;font-style:italic;">18 min → 6 min, demonstrated</div>
+      </div>
+      <div class="stat-card">
+        <div class="big-stat" style="font-size:72px;font-weight:900;color:var(--mint);letter-spacing:-.03em;line-height:1;"><span class="big-num" data-target="0" data-suffix="">0</span></div>
+        <div style="color:var(--muted);font-size:13px;margin-top:12px;">transcription paths left</div>
+        <div class="dim" style="font-size:11px;margin-top:6px;font-style:italic;">Wrong-customer disclosure ruled out</div>
+      </div>
+      <div class="stat-card">
+        <div class="big-stat" style="font-size:72px;font-weight:900;color:var(--gold);letter-spacing:-.03em;line-height:1;"><span class="big-num" data-target="11" data-suffix="">0</span></div>
+        <div style="color:var(--muted);font-size:13px;margin-top:12px;">scenarios covered</div>
+        <div class="dim" style="font-size:11px;margin-top:6px;font-style:italic;">Every shape we've seen, documented</div>
+      </div>
+    </div>
+
+    <div class="tip reveal r6" style="margin-top:24px;">
+      <span style="font-size:18px;">⏱️</span>
+      <span><strong class="purple">Every police case Ziina gets, since go-live</strong> — handled through the hub. Two months in.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 15. CLOSE ===== -->
+<section class="slide">
+  <div class="gradient-hero close"></div>
+  <div class="float-orbs">
+    <div class="f-orb coral s1"></div>
+    <div class="f-orb purple s2"></div>
+    <div class="f-orb gold s3"></div>
+    <div class="f-orb cyan s4"></div>
+  </div>
+  <div class="bracket tl"></div><div class="bracket tr"></div><div class="bracket bl"></div><div class="bracket br"></div>
+  <div class="grid-bg"></div>
+  <div class="slide-inner">
+    <div class="cover-tag reveal r1">That's the tour</div>
+    <div class="reveal r2"><h1>This is</h1></div>
+    <div class="reveal r3" style="margin-top:6px;"><h1>the <span class="purple">hub</span>.</h1></div>
+    <div class="lead reveal r5" style="margin-top:42px;max-width:700px;font-size:19px;">
+      Two months of work. Every police case Ziina gets, since go-live. Built from inside FinCrime, for the work the two of us do every day. Now you've seen it.
+    </div>
+    <div class="reveal r6" style="margin-top:48px;display:flex;align-items:center;gap:24px;">
+      <div style="width:48px;height:2px;background:var(--purple);"></div>
+      <div>
+        <div style="font-weight:700;font-size:17px;">Yomna Al Shemy</div>
+        <div class="muted" style="font-size:13px;margin-top:4px;">FinCrime Operations · Ziina Payment LLC</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+let cur = 0;
+const total = slides.length;
+const counter = document.getElementById('counter');
+const progress = document.getElementById('progress');
+
+document.querySelectorAll('.cover-title').forEach(el => {
+  el.classList.add('word-reveal');
+  const html = el.innerHTML;
+  el.innerHTML = html.replace(/(<[^>]+>|[^\s<]+)/g, (m) => {
+    if (m.startsWith('<')) return m;
+    return `<span class="word">${m}</span>&nbsp;`;
+  });
+});
+
+(function spawnParticles(){
+  const container = document.getElementById('particles');
+  if(!container) return;
+  for(let i=0;i<24;i++){
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = 1 + (i % 4);
+    p.style.width = size + 'px';
+    p.style.height = size + 'px';
+    p.style.left = ((i * 37) % 100) + '%';
+    p.style.bottom = '-' + (10 + (i * 7) % 30) + '%';
+    p.style.animationDuration = (22 + (i * 3) % 18) + 's';
+    p.style.animationDelay = (-1 * ((i * 1.7) % 22)) + 's';
+    p.style.opacity = (0.18 + ((i * 0.07) % 0.25));
+    container.appendChild(p);
+  }
+})();
+
+function updateHUD(){
+  const isCover = cur === 0;
+  const isOutro = cur === total - 1;
+  document.body.classList.toggle('hide-hud', isCover || isOutro);
+  document.body.classList.toggle('show-hint', isCover);
+}
+
+// Per-slide ambient color tints — adds chromatic variety across the deck
+const SLIDE_TINTS = [
+  '',         // 1  Cover
+  'red',      // 2  Pain landscape
+  'blue',     // 3  ACT I divider
+  'blue',     // 4  Meet the Unified Query
+  'blue',     // 5  Inside the Query
+  'magenta',  // 6  ACT II divider
+  'magenta',  // 7  Meet the Generator
+  'magenta',  // 8  The Hub (3D laptop)
+  'magenta',  // 9  Smart Paste
+  'magenta',  // 10 AI EID
+  'magenta',  // 11 Bilingual templates
+  'magenta',  // 12 State of Funds
+  'magenta',  // 13 Session Mode
+  'magenta',  // 14 PDF + ClickUp
+  '',         // 15 Today's dashboard
+  '',         // 16 Scenarios
+  'gold',     // 17 The numbers
+  '',         // 18 Close
+];
+function setTint(){
+  const t = SLIDE_TINTS[cur] || '';
+  if (t) document.body.setAttribute('data-tint', t);
+  else document.body.removeAttribute('data-tint');
+  // Toggle the 3D scene visibility — only on hero slides
+  document.body.classList.toggle('three-active', THREE_HERO_SLIDES.has(cur));
+}
+
+// Transition flourish — purple sweep between slides
+function fireFlourish(){
+  const el = document.getElementById('flourish');
+  if(!el) return;
+  el.classList.remove('fire');
+  void el.offsetWidth;  // restart animation
+  el.classList.add('fire');
+}
+
+// Outro screen — shown when navigating past the last slide
+function showOutro(){
+  document.getElementById('outroScreen').classList.add('on');
+}
+function hideOutro(){
+  document.getElementById('outroScreen').classList.remove('on');
+}
+
+function show(idx){
+  if(idx < 0 || idx >= total || idx === cur) return;
+  const prevIdx = cur;
+  const back = idx < prevIdx;
+
+  slides[prevIdx].querySelectorAll('video').forEach(v => { try { v.pause(); } catch(_){} });
+
+  if (back) {
+    slides[idx].classList.add('prev');
+    void slides[idx].offsetWidth;
+  }
+
+  slides[prevIdx].classList.remove('on');
+  if (!back) {
+    slides[prevIdx].classList.add('prev');
+  }
+
+  cur = idx;
+  setTimeout(() => {
+    slides.forEach((s,i) => {
+      if(i !== cur) s.classList.remove('on');
+    });
+    slides[cur].classList.add('on');
+  }, 20);
+
+  setTimeout(() => {
+    slides.forEach((s,i) => {
+      if(i !== cur) s.classList.remove('prev');
+    });
+  }, 950);
+
+  counter.textContent = String(cur+1).padStart(2,'0') + ' / ' + String(total).padStart(2,'0');
+  progress.style.width = ((cur+1) / total * 100) + '%';
+  updateHUD();
+  setTint();
+  fireFlourish();
+  hideOutro();
+  // Scramble hero titles after slide transition completes
+  setTimeout(() => applyScrambleOnSlide(cur), 250);
+  // Animate big numbers if this is the Numbers slide (index 16 = slide 17)
+  if (cur === 16) {
+    // Reset to 0 first so animation always plays fresh
+    slides[cur].querySelectorAll('.big-num[data-target]').forEach(el => {
+      el.textContent = '0' + (el.dataset.suffix || '');
+    });
+    setTimeout(() => animateBigNumbers(slides[cur]), 300);
+  }
+}
+function go(d){
+  // Past the last slide? Show outro instead of failing silently.
+  if (d > 0 && cur === total - 1) { showOutro(); return; }
+  // From outro, pressing back returns to last slide
+  if (d < 0 && document.getElementById('outroScreen').classList.contains('on')) {
+    hideOutro();
+    return;
+  }
+  show(cur + d);
+}
+
+document.addEventListener('keydown', e => {
+  if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  const isNav = e.key === 'ArrowRight' || e.key === 'ArrowLeft' || e.key === ' ' ||
+                e.key === 'PageDown' || e.key === 'PageUp' || e.key === 'Home' || e.key === 'End' ||
+                /^[0-9]$/.test(e.key);
+  if(isNav && e.target.tagName === 'VIDEO'){
+    e.target.blur();
+    if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  }
+  if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); e.stopPropagation(); go(1); }
+  if(e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); e.stopPropagation(); go(-1); }
+  if(e.key === 'Home') { e.preventDefault(); show(0); }
+  if(e.key === 'End') { e.preventDefault(); show(total-1); }
+  if(e.key === 'f' || e.key === 'F') {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+  if(/^[0-9]$/.test(e.key)){ e.preventDefault(); const n = parseInt(e.key,10); if(n>=1&&n<=total) show(n-1); }
+}, true);
+
+counter.textContent = '01 / ' + String(total).padStart(2,'0');
+progress.style.width = (1/total*100) + '%';
+updateHUD();
+setTint();
+
+// Intro screen — fades out after ~5.2s on first load
+(function playIntro(){
+  const intro = document.getElementById('introScreen');
+  if(!intro) return;
+  setTimeout(() => intro.classList.add('gone'), 5200);
+  const skip = () => { intro.classList.add('gone'); };
+  intro.addEventListener('click', skip);
+  document.addEventListener('keydown', function once(e){
+    if (intro.classList.contains('gone')) return;
+    skip();
+    document.removeEventListener('keydown', once);
+  }, {once:false});
+})();
+
+// Cursor-tracking spotlight — soft purple radial light follows mouse
+(function cursorTracker(){
+  const light = document.getElementById('cursorLight');
+  if(!light) return;
+  let raf = null, tx = window.innerWidth/2, ty = window.innerHeight/2;
+  let cx = tx, cy = ty;
+  function loop(){
+    // ease toward target
+    cx += (tx - cx) * 0.12;
+    cy += (ty - cy) * 0.12;
+    light.style.transform = `translate3d(${cx - 350}px, ${cy - 350}px, 0)`;
+    raf = requestAnimationFrame(loop);
+  }
+  document.addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; });
+  document.addEventListener('mouseleave', () => { light.style.opacity = '0'; });
+  document.addEventListener('mouseenter', () => { light.style.opacity = '1'; });
+  loop();
+})();
+
+// Character scramble — preserves HTML (purple spans, gradient classes) by restoring at end.
+const SCRAMBLE_CHARS = '!<>-_\\/[]{}—=+*^?#░▒▓█';
+function scrambleText(el, duration = 900) {
+  if(!el || !el.dataset.origHtml) return;
+  const originalHtml = el.dataset.origHtml;
+  // Extract plain text for char count
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = originalHtml;
+  const finalText = tempDiv.innerText;
+  const chars = finalText.split('');
+  const startTime = performance.now();
+  function frame(now){
+    const elapsed = now - startTime;
+    const progress = Math.min(1, elapsed / duration);
+    let out = '';
+    for(let i=0; i<chars.length; i++){
+      const charProgress = Math.max(0, (progress - (i / chars.length) * 0.4) / 0.6);
+      if (chars[i] === ' ' || chars[i] === '\n' || charProgress >= 1) {
+        out += chars[i];
+      } else {
+        out += SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+      }
+    }
+    el.textContent = out;
+    if (progress < 1) requestAnimationFrame(frame);
+    else el.innerHTML = originalHtml;  // restore HTML with purple spans intact
+  }
+  requestAnimationFrame(frame);
+}
+
+// Apply scramble to .hero-title elements when their slide becomes active.
+// Cover-title is left alone so the existing word-reveal animation still works.
+function applyScrambleOnSlide(idx){
+  const slide = slides[idx];
+  const titles = slide.querySelectorAll('.hero-title');
+  titles.forEach((t, i) => {
+    if(!t.dataset.origHtml) t.dataset.origHtml = t.innerHTML;
+    setTimeout(() => scrambleText(t, 900), 250 + (i * 200));
+  });
+}
+
+// Animated number counters (slide 14) — tick up with spring easing + confetti burst
+function animateBigNumbers(slideEl){
+  const nums = slideEl.querySelectorAll('.big-num[data-target]');
+  nums.forEach((el, i) => {
+    const target = parseInt(el.dataset.target, 10);
+    const suffix = el.dataset.suffix || '';
+    const duration = 1800;
+    const delay = 350 + (i * 200);
+    setTimeout(() => {
+      const startTime = performance.now();
+      function tick(now){
+        const t = Math.min(1, (now - startTime) / duration);
+        // ease-out quart
+        const eased = 1 - Math.pow(1 - t, 4);
+        const val = Math.round(target * eased);
+        el.textContent = val + suffix;
+        if (t < 1) requestAnimationFrame(tick);
+        else {
+          el.textContent = target + suffix;
+          // Brief flash on settle
+          el.style.textShadow = '0 0 30px currentColor';
+          setTimeout(() => { el.style.textShadow = ''; }, 600);
+          // Confetti burst from the center of this number
+          const rect = el.getBoundingClientRect();
+          fireConfetti(rect.left + rect.width/2, rect.top + rect.height/2, 45);
+        }
+      }
+      requestAnimationFrame(tick);
+    }, delay);
+  });
+}
+
+// ============================================================
+// THREE.JS 3D SCENE — floating geometric objects, mouse-reactive
+// Visible only on hero slides (1,3,5,12,14,15) via body.three-active
+// ============================================================
+// 0-indexed: cover, ACT I, Query hero, ACT II, Generator hero, Hub-laptop, Today, Numbers, Close
+const THREE_HERO_SLIDES = new Set([0, 2, 3, 5, 6, 7, 14, 16, 17]);
+let threeScene = null, threeCam = null, threeRenderer = null, threeObjects = [];
+let threeMouseX = 0, threeMouseY = 0;
+let threeTargetMX = 0, threeTargetMY = 0;
+function initThree(){
+  if (typeof THREE === 'undefined') { console.warn('Three.js not loaded'); return; }
+  const canvas = document.getElementById('threeCanvas');
+  if (!canvas) return;
+
+  threeScene = new THREE.Scene();
+  threeCam = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+  threeCam.position.z = 7;
+
+  threeRenderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  threeRenderer.setSize(window.innerWidth, window.innerHeight);
+  threeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  // Lights — soft ambient + colored point lights for the brand feel
+  threeScene.add(new THREE.AmbientLight(0xffffff, 0.35));
+  const p1 = new THREE.PointLight(0x9B28EB, 2.2, 30);  p1.position.set(-6,  3, 5); threeScene.add(p1);
+  const p2 = new THREE.PointLight(0xC840E0, 1.6, 30);  p2.position.set( 6, -3, 5); threeScene.add(p2);
+  const p3 = new THREE.PointLight(0x5AE0E5, 1.2, 30);  p3.position.set( 0,  4, 3); threeScene.add(p3);
+  const p4 = new THREE.PointLight(0xFFC93C, 0.8, 30);  p4.position.set( 4,  0, 6); threeScene.add(p4);
+
+  // Geometries — a mix of platonic solids + torus knots for organic variety
+  const GEOMETRIES = [
+    () => new THREE.IcosahedronGeometry(0.55 + Math.random() * 0.4, 0),
+    () => new THREE.OctahedronGeometry(0.5 + Math.random() * 0.4, 0),
+    () => new THREE.DodecahedronGeometry(0.5 + Math.random() * 0.3, 0),
+    () => new THREE.TorusKnotGeometry(0.35 + Math.random() * 0.15, 0.10 + Math.random() * 0.05, 80, 12),
+    () => new THREE.TorusGeometry(0.45 + Math.random() * 0.2, 0.10, 14, 32),
+  ];
+  const COLORS = [0x9B28EB, 0xC840E0, 0x7B5CFF, 0x5AE0E5, 0xFF8BA7, 0xFFC93C, 0x5FE3B5];
+
+  for (let i = 0; i < 14; i++) {
+    const geo = GEOMETRIES[Math.floor(Math.random() * GEOMETRIES.length)]();
+    const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+    const wireframe = Math.random() > 0.55;
+    const mat = wireframe
+      ? new THREE.MeshBasicMaterial({ color, wireframe: true, transparent: true, opacity: 0.45 })
+      : new THREE.MeshPhysicalMaterial({
+          color, metalness: 0.5, roughness: 0.15,
+          transparent: true, opacity: 0.55,
+          clearcoat: 0.6, clearcoatRoughness: 0.2,
+          transmission: 0.15
+        });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(
+      (Math.random() - 0.5) * 16,
+      (Math.random() - 0.5) * 9,
+      (Math.random() - 0.5) * 4 - 1.5
+    );
+    mesh.userData = {
+      drift: {
+        x: (Math.random() - 0.5) * 0.004,
+        y: (Math.random() - 0.5) * 0.003,
+      },
+      spin: {
+        x: (Math.random() - 0.5) * 0.008,
+        y: (Math.random() - 0.5) * 0.008,
+        z: (Math.random() - 0.5) * 0.004,
+      },
+      baseY: mesh.position.y,
+      bobPhase: Math.random() * Math.PI * 2,
+    };
+    threeScene.add(mesh);
+    threeObjects.push(mesh);
+  }
+
+  // Mouse parallax
+  document.addEventListener('mousemove', e => {
+    threeTargetMX = (e.clientX / window.innerWidth - 0.5) * 2.0;
+    threeTargetMY = (e.clientY / window.innerHeight - 0.5) * 1.2;
+  });
+
+  window.addEventListener('resize', () => {
+    threeCam.aspect = window.innerWidth / window.innerHeight;
+    threeCam.updateProjectionMatrix();
+    threeRenderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  // Animation loop
+  let t0 = performance.now();
+  function loop(now){
+    const dt = (now - t0) / 1000;
+    requestAnimationFrame(loop);
+
+    // Mouse-reactive camera parallax
+    threeMouseX += (threeTargetMX - threeMouseX) * 0.04;
+    threeMouseY += (threeTargetMY - threeMouseY) * 0.04;
+    threeCam.position.x = threeMouseX * 1.2;
+    threeCam.position.y = -threeMouseY * 0.8;
+    threeCam.lookAt(0, 0, 0);
+
+    // Animate each object
+    for (const obj of threeObjects) {
+      obj.rotation.x += obj.userData.spin.x;
+      obj.rotation.y += obj.userData.spin.y;
+      obj.rotation.z += obj.userData.spin.z;
+      obj.position.x += obj.userData.drift.x;
+      obj.position.y = obj.userData.baseY + Math.sin(dt * 0.7 + obj.userData.bobPhase) * 0.3 + obj.userData.drift.y * dt * 60;
+      // Bounce off boundaries
+      if (Math.abs(obj.position.x) > 9) obj.userData.drift.x *= -1;
+    }
+
+    threeRenderer.render(threeScene, threeCam);
+  }
+  loop(t0);
+}
+// Initialize Three.js after page load
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  setTimeout(initThree, 100);
+} else {
+  document.addEventListener('DOMContentLoaded', () => setTimeout(initThree, 100));
+}
+
+// ============================================================
+// LIVE COUNTER on the cover — ticks up randomly to feel real-time
+// ============================================================
+(function liveCounter(){
+  let count = 247;
+  function tick(){
+    if (Math.random() > 0.4) {
+      count += 1;
+      const el = document.getElementById('liveCounter');
+      if (el) {
+        el.textContent = count.toLocaleString();
+        el.classList.add('tick');
+        setTimeout(() => el.classList.remove('tick'), 250);
+      }
+    }
+    // Random next tick between 2.5s and 6s — feels organic
+    setTimeout(tick, 2500 + Math.random() * 3500);
+  }
+  setTimeout(tick, 6000); // first tick after intro fades
+})();
+
+// Cursor particle trail — soft glowing dots stream behind the cursor
+(function cursorTrail(){
+  let lastSpawn = 0;
+  const colors = ['', '', '', 'coral', 'cyan', 'gold']; // weighted toward default purple
+  let lastX = -1, lastY = -1;
+  document.addEventListener('mousemove', e => {
+    const now = performance.now();
+    if (now - lastSpawn < 32) return; // throttle to ~30fps
+    // Only spawn if mouse actually moved enough
+    if (lastX > -1) {
+      const dx = e.clientX - lastX, dy = e.clientY - lastY;
+      if (Math.sqrt(dx*dx + dy*dy) < 6) return;
+    }
+    lastSpawn = now;
+    lastX = e.clientX; lastY = e.clientY;
+    const dot = document.createElement('div');
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    dot.className = 'cursor-trail' + (color ? ' ' + color : '');
+    dot.style.left = e.clientX + 'px';
+    dot.style.top = e.clientY + 'px';
+    document.body.appendChild(dot);
+    setTimeout(() => dot.remove(), 850);
+  });
+})();
+
+// Confetti burst — physics-based particles, fires on number-counter finish
+function fireConfetti(originX, originY, count = 50) {
+  const canvas = document.getElementById('confettiCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const COLORS = ['#9B28EB', '#C840E0', '#FFC93C', '#FF8BA7', '#5AE0E5', '#5FE3B5', '#FFD86B', '#7B5CFF'];
+  const particles = [];
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 4 + Math.random() * 9;
+    particles.push({
+      x: originX, y: originY,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - (5 + Math.random() * 4),
+      size: 5 + Math.random() * 6,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      alpha: 1,
+      rotation: Math.random() * Math.PI * 2,
+      vrotation: (Math.random() - 0.5) * 0.35,
+      shape: Math.random() > 0.5 ? 'rect' : 'circle'
+    });
+  }
+
+  let frameId;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    for (const p of particles) {
+      if (p.alpha <= 0) continue;
+      alive = true;
+      p.vy += 0.20;   // gravity
+      p.vx *= 0.985;  // drag
+      p.vy *= 0.99;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rotation += p.vrotation;
+      p.alpha -= 0.011;
+
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, p.alpha);
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation);
+      ctx.fillStyle = p.color;
+      ctx.shadowColor = p.color;
+      ctx.shadowBlur = 12;
+      if (p.shape === 'rect') {
+        ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size*1.4);
+      } else {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.size/2, 0, Math.PI*2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+    if (alive) frameId = requestAnimationFrame(animate);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  animate();
+}
+
+// Mouse-parallax for floating orbs — they drift toward the cursor subtly
+(function orbParallax(){
+  let mx = 0, my = 0;       // mouse normalized -1 to 1 from center
+  let tmx = 0, tmy = 0;     // target
+  document.addEventListener('mousemove', e => {
+    tmx = (e.clientX / window.innerWidth - 0.5) * 2;
+    tmy = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+  function loop(){
+    mx += (tmx - mx) * 0.08;
+    my += (tmy - my) * 0.08;
+    // Apply to all currently-on float-orbs containers
+    document.querySelectorAll('.slide.on .float-orbs').forEach(container => {
+      const orbs = container.querySelectorAll('.f-orb');
+      orbs.forEach((orb, i) => {
+        // Different orbs respond differently for depth
+        const depth = (i % 3 + 1) * 8;
+        orb.style.translate = `${mx * depth}px ${my * depth}px`;
+      });
+    });
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+let tx = 0;
+document.addEventListener('touchstart', e => tx = e.touches[0].clientX, {passive:true});
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - tx;
+  if(Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
+});
+</script>
+</body>
+</html>
