@@ -440,6 +440,57 @@ body.three-active .three-canvas{opacity:1;}
 .hub-mini-recent div{display:grid;grid-template-columns:1fr auto;gap:6px;padding:2px 0;border-bottom:1px solid #1c1530;}
 .hub-mini-recent .ref{color:var(--purple);font-family:'JetBrains Mono',monospace;font-size:6.5px;}
 
+/* ===== CHAPTER DIVIDER MOTIFS (animated SVG above roman numerals) ===== */
+.chapter-motif{
+  width:120px;height:120px;
+  margin-bottom:-24px;
+  display:flex;align-items:center;justify-content:center;
+}
+.chapter-motif svg{width:100%;height:100%;color:var(--purple);filter:drop-shadow(0 0 24px var(--purple));}
+
+/* ACT I motif — radar pulse (search side) */
+.motif-radar .ring{stroke:currentColor;fill:none;stroke-width:1.5;opacity:0;animation:radarPulse 3s ease-out infinite;}
+.motif-radar .ring:nth-child(2){animation-delay:1s;}
+.motif-radar .ring:nth-child(3){animation-delay:2s;}
+.motif-radar .sweep{transform-origin:60px 60px;animation:radarSweep 3s linear infinite;}
+.motif-radar .dot{fill:currentColor;animation:radarDot 3s ease-in-out infinite;}
+@keyframes radarPulse{0%{r:8;opacity:1;}100%{r:48;opacity:0;}}
+@keyframes radarSweep{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+@keyframes radarDot{0%,100%{opacity:.4;}50%{opacity:1;}}
+
+/* ACT II motif — interlocking rotating gears (workflow engine) */
+.motif-gears .gear{stroke:currentColor;fill:none;stroke-width:1.5;transform-origin:center;}
+.motif-gears .gear.g1{animation:gearSpin 8s linear infinite;}
+.motif-gears .gear.g2{animation:gearSpinReverse 6s linear infinite;}
+.motif-gears .core{fill:currentColor;animation:gearCorePulse 2.5s ease-in-out infinite;}
+@keyframes gearSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+@keyframes gearSpinReverse{from{transform:rotate(0deg);}to{transform:rotate(-360deg);}}
+@keyframes gearCorePulse{0%,100%{opacity:.5;}50%{opacity:1;}}
+
+/* ===== LIGHTNING ARCS (Session Mode slide) ===== */
+.lightning-stage{position:relative;display:inline-block;}
+.lightning-svg{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:240px;height:60px;pointer-events:none;z-index:2;
+}
+.lightning-bolt{
+  stroke:var(--cyan);fill:none;stroke-width:2;stroke-linecap:round;
+  filter:drop-shadow(0 0 8px var(--cyan)) drop-shadow(0 0 14px var(--purple));
+  opacity:0;
+  animation:lightningFlash 2.4s ease-out infinite;
+}
+.lightning-bolt.b2{stroke:var(--purple2);filter:drop-shadow(0 0 8px var(--purple2)) drop-shadow(0 0 14px var(--coral));animation-delay:.6s;}
+.lightning-bolt.b3{stroke:var(--coral);filter:drop-shadow(0 0 8px var(--coral)) drop-shadow(0 0 14px var(--gold));animation-delay:1.2s;}
+@keyframes lightningFlash{
+  0%,100%{opacity:0;}
+  3%{opacity:1;}
+  5%{opacity:.3;}
+  7%{opacity:1;}
+  10%{opacity:0;}
+  15%{opacity:.6;}
+  17%{opacity:0;}
+}
+
 /* ===== 3D-PERSPECTIVE DASHBOARD (slide 15 — Today) ===== */
 .dash-3d-stage{
   perspective:2000px;
@@ -1126,9 +1177,20 @@ h4{font-size:20px;font-weight:700;letter-spacing:-.005em;}
   </div>
   <div class="slide-inner chapter-slide">
     <div class="chapter-act-tag reveal r1">Act One</div>
-    <div class="chapter-roman reveal r2">I</div>
-    <h2 class="chapter-title reveal r3">The <span class="purple">Search</span> Side.</h2>
-    <div class="chapter-sub reveal r4">How we find the right account behind a police request, even when the data comes in messy.</div>
+    <div class="chapter-motif motif-radar reveal r2">
+      <svg viewBox="0 0 120 120">
+        <circle class="ring" cx="60" cy="60"/>
+        <circle class="ring" cx="60" cy="60"/>
+        <circle class="ring" cx="60" cy="60"/>
+        <line class="sweep" x1="60" y1="60" x2="60" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+        <circle class="dot" cx="60" cy="60" r="4"/>
+        <circle class="dot" cx="82" cy="40" r="2.5"/>
+        <circle class="dot" cx="38" cy="76" r="2"/>
+      </svg>
+    </div>
+    <div class="chapter-roman reveal r3">I</div>
+    <h2 class="chapter-title reveal r4">The <span class="purple">Search</span> Side.</h2>
+    <div class="chapter-sub reveal r5">How we find the right account behind a police request, even when the data comes in messy.</div>
   </div>
 </section>
 
@@ -1251,9 +1313,41 @@ h4{font-size:20px;font-weight:700;letter-spacing:-.005em;}
   </div>
   <div class="slide-inner chapter-slide">
     <div class="chapter-act-tag reveal r1">Act Two</div>
-    <div class="chapter-roman reveal r2">II</div>
-    <h2 class="chapter-title reveal r3">The <span class="purple">Workflow</span> Engine.</h2>
-    <div class="chapter-sub reveal r4">Once we've found the account — how the Generator turns a paste into a regulated response in one click.</div>
+    <div class="chapter-motif motif-gears reveal r2">
+      <svg viewBox="0 0 120 120">
+        <g class="gear g1" transform="translate(42,50)">
+          <circle r="18" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <g stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="0" y1="-22" x2="0" y2="-26"/>
+            <line x1="22" y1="0" x2="26" y2="0"/>
+            <line x1="0" y1="22" x2="0" y2="26"/>
+            <line x1="-22" y1="0" x2="-26" y2="0"/>
+            <line x1="15.5" y1="-15.5" x2="18.4" y2="-18.4"/>
+            <line x1="15.5" y1="15.5" x2="18.4" y2="18.4"/>
+            <line x1="-15.5" y1="15.5" x2="-18.4" y2="18.4"/>
+            <line x1="-15.5" y1="-15.5" x2="-18.4" y2="-18.4"/>
+          </g>
+          <circle class="core" r="6"/>
+        </g>
+        <g class="gear g2" transform="translate(78,70)">
+          <circle r="14" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <g stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="0" y1="-17" x2="0" y2="-20"/>
+            <line x1="17" y1="0" x2="20" y2="0"/>
+            <line x1="0" y1="17" x2="0" y2="20"/>
+            <line x1="-17" y1="0" x2="-20" y2="0"/>
+            <line x1="12" y1="-12" x2="14" y2="-14"/>
+            <line x1="12" y1="12" x2="14" y2="14"/>
+            <line x1="-12" y1="12" x2="-14" y2="14"/>
+            <line x1="-12" y1="-12" x2="-14" y2="-14"/>
+          </g>
+          <circle class="core" r="5"/>
+        </g>
+      </svg>
+    </div>
+    <div class="chapter-roman reveal r3">II</div>
+    <h2 class="chapter-title reveal r4">The <span class="purple">Workflow</span> Engine.</h2>
+    <div class="chapter-sub reveal r5">Once we've found the account — how the Generator turns a paste into a regulated response in one click.</div>
   </div>
 </section>
 
@@ -1660,15 +1754,21 @@ h4{font-size:20px;font-weight:700;letter-spacing:-.005em;}
             </div>
             <button class="mock-btn ghost sm">Clear &amp; Next Subject</button>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-            <div class="mock-card" style="background:rgba(61,214,140,.04);border-color:rgba(61,214,140,.3);">
+          <div class="lightning-stage" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;position:relative;">
+            <!-- Lightning arcs connecting the two subjects — 3 alternating bolts -->
+            <svg class="lightning-svg" viewBox="0 0 240 60" preserveAspectRatio="none">
+              <path class="lightning-bolt" d="M 0,30 L 60,18 L 100,38 L 150,22 L 200,34 L 240,28"/>
+              <path class="lightning-bolt b2" d="M 0,30 L 50,42 L 110,22 L 160,40 L 210,26 L 240,32"/>
+              <path class="lightning-bolt b3" d="M 0,30 L 70,30 L 110,12 L 170,46 L 230,30 L 240,30"/>
+            </svg>
+            <div class="mock-card" style="background:rgba(61,214,140,.04);border-color:rgba(61,214,140,.3);position:relative;z-index:3;">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
                 <div style="font-weight:700;font-size:13px;">Subject 1 ✓</div>
                 <div style="font-size:10px;font-family:'JetBrains Mono',monospace;padding:2px 8px;background:rgba(61,214,140,.12);color:var(--green);border-radius:4px;">HELD</div>
               </div>
               <div style="font-size:11.5px;color:var(--muted);">Hamza Gaffar · AED 1,500 held</div>
             </div>
-            <div class="mock-card" style="border-color:rgba(155,40,235,.5);background:rgba(155,40,235,.05);">
+            <div class="mock-card" style="border-color:rgba(155,40,235,.5);background:rgba(155,40,235,.05);position:relative;z-index:3;">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
                 <div style="font-weight:700;font-size:13px;">Subject 2 — active</div>
                 <div style="font-size:10px;font-family:'JetBrains Mono',monospace;padding:2px 8px;background:rgba(155,40,235,.14);color:var(--purple);border-radius:4px;">FILLING</div>
