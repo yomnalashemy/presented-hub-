@@ -440,6 +440,40 @@ body.three-active .three-canvas{opacity:1;}
 .hub-mini-recent div{display:grid;grid-template-columns:1fr auto;gap:6px;padding:2px 0;border-bottom:1px solid #1c1530;}
 .hub-mini-recent .ref{color:var(--purple);font-family:'JetBrains Mono',monospace;font-size:6.5px;}
 
+/* ===== 3D-PERSPECTIVE DASHBOARD (slide 15 — Today) ===== */
+.dash-3d-stage{
+  perspective:2000px;
+  display:flex;align-items:center;justify-content:center;
+  margin-top:18px;
+  position:relative;
+}
+.dash-3d{
+  width:100%;max-width:1080px;
+  transform-style:preserve-3d;
+  transform:rotateX(10deg) rotateY(-8deg);
+  animation:dash3dFloat 9s ease-in-out infinite;
+  position:relative;
+}
+@keyframes dash3dFloat{
+  0%,100%{transform:rotateX(10deg) rotateY(-8deg) translateY(0);}
+  50%{transform:rotateX(7deg) rotateY(-4deg) translateY(-12px);}
+}
+.dash-3d .mock-window{
+  box-shadow:
+    0 60px 120px rgba(155,40,235,.4),
+    0 30px 60px rgba(0,0,0,.5),
+    0 0 0 2px rgba(155,40,235,.35),
+    inset 0 1px 0 rgba(255,255,255,.10) !important;
+}
+.dash-3d::after{
+  content:'';position:absolute;left:50%;bottom:-40px;
+  width:70%;height:36px;
+  background:radial-gradient(ellipse at center,rgba(155,40,235,.45),transparent 65%);
+  transform:translateX(-50%);
+  filter:blur(18px);
+  z-index:-1;
+}
+
 /* ===== CUSTOM ANIMATED FEATURE ICONS ===== */
 .feat-svg{
   width:40px;height:40px;display:block;
@@ -1710,7 +1744,8 @@ h4{font-size:20px;font-weight:700;letter-spacing:-.005em;}
     <div class="eye reveal r1">Today</div>
     <h2 class="reveal r2">Here's how it <span class="purple">all fits</span> together.</h2>
 
-    <div class="reveal r3" style="display:flex;justify-content:center;margin-top:22px;">
+    <div class="reveal r3 dash-3d-stage">
+      <div class="dash-3d">
       <div class="mock-window" style="width:1040px;">
         <div class="mock-titlebar">
           <div class="mock-dot red"></div><div class="mock-dot yellow"></div><div class="mock-dot green"></div>
@@ -1754,6 +1789,7 @@ h4{font-size:20px;font-weight:700;letter-spacing:-.005em;}
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   </div>
